@@ -1,0 +1,7 @@
+{
+  "name": "UBBOrarFrontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
