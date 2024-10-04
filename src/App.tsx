@@ -40,6 +40,7 @@ import '@ionic/react/css/palettes/dark.class.css'
 
 import {Layout} from "./Layout"
 import {Test} from "./pages/Test"
+import {OrarSettings} from "./pages/OrarSettings"
 
 setupIonicReact();
 
@@ -50,6 +51,8 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           <Layout>
             <Route exact path="/" component={Test} />
+            <Route exact path="/orar-settings" component={OrarSettings} />
+            <Route exact path="/test" component={Test} />
           </Layout>
         </IonRouterOutlet>
       </IonReactRouter>

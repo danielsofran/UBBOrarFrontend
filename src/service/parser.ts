@@ -1,6 +1,6 @@
-import {Ora, Orar, Tip, Ziua} from "../model/orar"
+import {Ora, Orar, Source, Tip, Ziua} from "../model/orar"
 
-export const parseHtml = (html: string): Orar => {
+export const parseOrarHtml = (html: string, source: Source): Orar => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
   const table = doc.querySelector('tbody')
@@ -12,7 +12,7 @@ export const parseHtml = (html: string): Orar => {
     const ora = new Ora()
     ora.ziua = cells[0].textContent as Ziua
     ora.timeText = cells[1].textContent
-    ora.saptamana = cells[2].textContent === '' ? undefined : parseInt(cells[3].textContent) as 1 | 2
+    ora.saptamana = cells[2].textContent === '' ? undefined : cells[2].textContent as "1" | "2"
     ora.numeMaterie = cells[3].textContent
     ora.tip = cells[4].textContent as Tip
     ora.sala = cells[5].textContent
@@ -27,8 +27,9 @@ export const parseHtml = (html: string): Orar => {
   if(!lastUpdateText[1])
     throw new Error('Invalid HTML')
   const lastUpdate = new Date(lastUpdateText[1])
-  return {
-    orar: ore,
-    lastUpdate: lastUpdate
-  }
+  const orar = new Orar()
+  orar.ore = ore
+  orar.sources = [source]
+  orar.lastUpdate = lastUpdate
+  return orar
 }
