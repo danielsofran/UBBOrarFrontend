@@ -1,7 +1,8 @@
 import {Ora, OrarGrupa} from "../model/orar"
 import {IonAccordion, IonAccordionGroup, IonCheckbox, IonItem, IonLabel, IonList} from "@ionic/react"
-import {getMaterieCheckedState, getMaterii, getSaptamanaFormat, getTimeFormat, setMaterieHidden as setMaterieHiddenModel, setOraHidden as setOraHiddenModel, MaterieHiddenState} from "../service/orarUtils"
+import {getMaterieCheckedState, getMaterii, setMaterieHidden as setMaterieHiddenModel, setOraHidden as setOraHiddenModel, MaterieHiddenState} from "../service/orarUtils"
 import {useEffect, useRef, useState} from "react"
+import {getSaptamanaFormat, getTimeFormat} from "../service/utils"
 
 interface ListaMateriiProps {
   orar: OrarGrupa

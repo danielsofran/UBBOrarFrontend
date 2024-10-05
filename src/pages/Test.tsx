@@ -3,6 +3,8 @@ import {useAppDispatch, useAppSelector} from "../store"
 import {orarDataSelector} from "../reducers/orarData"
 import {useEffect} from "react"
 import {setCurrentTab} from "../reducers/navigation"
+import {OrarZi} from "../components/OrarZi"
+import {Ziua} from "../model/orar"
 
 export const Test: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -14,9 +16,9 @@ export const Test: React.FC = () => {
   }, [])
 
   return (
-    <IonContent>
+    <IonContent className="ion-padding">
       <h1>Test</h1>
-      <pre>{JSON.stringify(orarData, null, 2)}</pre>
+      <OrarZi orar={orarData} zi={Ziua.VINERI}/>
     </IonContent>
   )
 }

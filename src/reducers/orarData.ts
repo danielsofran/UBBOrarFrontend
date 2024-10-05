@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import { Orar, OrarGrupa} from "../model/orar"
 import {RootState} from "../store"
-import {getAcademicYear, getSemester} from "../service/orarUtils"
+import {getAcademicYear, getSemester} from "../service/utils"
 
 const initialState = {
   mainOrar: {

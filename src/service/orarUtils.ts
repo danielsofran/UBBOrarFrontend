@@ -1,5 +1,6 @@
 import {formatDatePart} from "./utils"
-import {CustomOra, Ora, Orar, OrarGrupa} from "../model/orar"
+import {BaseOra, CustomOra, Ora, Orar, OrarGrupa, OraType, Ziua} from "../model/orar"
+import {DateLimit} from "./orarGridUtils"
 
 export enum MaterieHiddenState {
   CHECKED = "checked",
@@ -33,6 +34,30 @@ export const getMaterieCheckedState = (orar: OrarGrupa, materie: string) => {
   const isUncheck = ore.every((ora) => ora.hidden)
   const rez = isCheck ? MaterieHiddenState.CHECKED : isUncheck ? MaterieHiddenState.UNCHECKED : MaterieHiddenState.INDETERMINATE
   return rez
+}
+
+export const getOrarOreFacultate = (orar: Orar): Ora[] => {
+  const ore = orar.mainOrar.ore
+  for (const orarSuplimentar of orar.orareSuplimentare)
+    ore.push(...orarSuplimentar.ore)
+  return ore
+}
+
+export const getOrarOre = (orar: Orar): BaseOra[] => {
+  const ore: BaseOra[] = getOrarOreFacultate(orar)
+  for (const oraPersonal of orar.orePersonale)
+    ore.push(oraPersonal)
+  return ore
+}
+
+export const getOraType = (ora: BaseOra): OraType => {
+  return ora.hasOwnProperty("numeMaterie") ? OraType.FACULTATE : OraType.PERSONAL
+}
+
+export const getDateStart = (ora: BaseOra): Date => {
+  const date = new Date()
+  date.setHours(parseInt(ora.hourStart), parseInt(ora.minuteStart))
+  return date
 }
 
 // setters
@@ -80,6 +105,34 @@ export const orarAnSemestruExists = (orar: Orar): boolean => {
 export const orarSourceExists = (orar: Orar): boolean => {
   return orarAnSemestruExists(orar) && orar.mainOrar.source.grupa !== ""
 }
+
+export const orarFirstLastHourInDay = (orar: Orar, ziua: Ziua): DateLimit | undefined => {
+  const ore = getOrarOre(orar).filter(ora => ora.ziua === ziua && !ora.hidden)
+  if (ore.length === 0)
+    return
+  let firstHour = ore[0].hourStart, lastHour = ore[0].hourEnd, firstMinute = ore[0].minuteStart, lastMinute = ore[0].minuteEnd
+  for (const ora of ore) {
+    if (ora.hourStart < firstHour || (ora.hourStart === firstHour && ora.minuteStart < firstMinute)) {
+      firstHour = ora.hourStart
+      firstMinute = ora.minuteStart
+    }
+    if (ora.hourEnd > lastHour || (ora.hourEnd === lastHour && ora.minuteEnd > lastMinute)) {
+      lastHour = ora.hourEnd
+      lastMinute = ora.minuteEnd
+    }
+  }
+  return {
+    firstHour: parseInt(firstHour),
+    firstMinute: parseInt(firstMinute),
+    lastHour: parseInt(lastHour),
+    lastMinute: parseInt(lastMinute)
+  }
+}
+
+export const oraStartsBefore = (ora: BaseOra, hour: number, minute: number = 0): boolean => {
+  return parseInt(ora.hourStart) < hour || (parseInt(ora.hourStart) === hour && parseInt(ora.minuteStart) < minute)
+}
+
 
 // equals
 
@@ -144,35 +197,4 @@ export const equalsOrar = (orar1: Orar, orar2: Orar): boolean => {
     if(!equalsCustomOra(orar1.orePersonale[i], orar2.orePersonale[i]))
       return false
   return true
-}
-
-// date utils
-
-export const getAcademicYear = () => {
-  const date = new Date()
-  const month = date.getMonth()
-  let rez = date.getFullYear()
-  if (month < 9)
-    rez--
-  return rez.toString()
-}
-
-export const getSemester = () => {
-  const date = new Date()
-  const month = date.getMonth()
-  if (month >= 9 || month < 2)
-    return "1"
-  return "2"
-}
-
-export const getTimeFormat = (ora: Ora) => {
-  return `${ora.hourStart}:${ora.minuteStart} - ${ora.hourEnd}:${ora.minuteEnd}`
-}
-
-export const getSaptamanaFormat = (ora: Ora) => {
-  if (ora.saptamana === "1")
-    return "S1"
-  if (ora.saptamana === "2")
-    return "S2"
-  return "S1/S2"
 }
