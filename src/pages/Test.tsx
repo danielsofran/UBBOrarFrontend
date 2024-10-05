@@ -8,7 +8,7 @@ export const Test: React.FC = () => {
   return (
     <IonContent>
       <h1>Test</h1>
-      <pre>{JSON.stringify(orarData.orar, null, 2)}</pre>
+      <pre>{JSON.stringify(orarData, null, 2)}</pre>
     </IonContent>
   )
 }

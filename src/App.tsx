@@ -38,6 +38,9 @@ import '@ionic/react/css/display.css'
 import '@ionic/react/css/palettes/dark.class.css'
 // import '@ionic/react/css/palettes/dark.system.css'
 
+/* Theme variables */
+import './theme.css'
+
 import {Layout} from "./Layout"
 import {Test} from "./pages/Test"
 import {OrarSettings} from "./pages/OrarSettings"
@@ -64,15 +67,13 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <Layout>
         <IonRouterOutlet>
-
+          <Layout>
             <Route exact path="/" component={Test} />
             <Route exact path="/orar-settings" component={OrarSettings} />
             <Route exact path="/test" component={Test} />
-
+          </Layout>
         </IonRouterOutlet>
-        </Layout>
       </IonReactRouter>
     </IonApp>
   )

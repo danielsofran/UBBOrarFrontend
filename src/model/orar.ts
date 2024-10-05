@@ -14,13 +14,16 @@ export enum Tip {
   LABORATOR = "Laborator"
 }
 
-interface ParsedOra {
+interface BaseOra {
   ziua: Ziua
   hourStart: string
   minuteStart: string
   hourEnd: string
   minuteEnd: string
   saptamana?: "1" | "2" | " "
+}
+
+interface ParsedOra extends BaseOra {
   numeMaterie: string
   tip: Tip
   sala: string
@@ -38,8 +41,20 @@ export interface Source {
   grupa: string
 }
 
-export interface Orar {
+export interface OrarGrupa {
   ore: Ora[]
-  sources: Source[]
-  lastUpdate: Date
+  source: Source
+}
+
+export interface CustomOra extends BaseOra {
+  title: string
+  details: string
+  hidden: boolean
+}
+
+export interface Orar {
+  mainOrar: OrarGrupa
+  orareSuplimentare: OrarGrupa[]
+  orePersonale: CustomOra[]
+  lastUpdate?: Date
 }

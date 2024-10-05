@@ -1,6 +1,11 @@
-import {Ora, Orar, Source, Tip, Ziua} from "../model/orar"
+import {Ora, OrarGrupa, Source, Tip, Ziua} from "../model/orar"
 
-export const parseOrarHtml = (html: string, source: Source): Orar => {
+export interface ParseResult {
+  orar: OrarGrupa
+  lastUpdate: Date
+}
+
+export const parseOrarHtml = (html: string, source: Source): ParseResult => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
   const table = doc.querySelector('tbody')
@@ -27,7 +32,7 @@ export const parseOrarHtml = (html: string, source: Source): Orar => {
       profesor: cells[6].textContent,
       formatie: cells[7].textContent,
       hidden: false
-    }
+    } as Ora
   })
   // find the text after "Ultima actualizare: (date)"
   const lastUpdateText = doc.body.textContent.match(/Ultima actualizare: (\d{1,2}.\d{1,2}.\d{4})/)
@@ -37,8 +42,10 @@ export const parseOrarHtml = (html: string, source: Source): Orar => {
     throw new Error('Invalid HTML')
   const lastUpdate = new Date(lastUpdateText[1])
   return {
-    ore: ore,
-    sources: [source],
-    lastUpdate: lastUpdate
+    orar: {
+      ore,
+      source
+    },
+    lastUpdate
   }
 }

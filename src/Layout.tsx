@@ -44,7 +44,7 @@ export const Layout: React.FC = ({children}) => {
               </IonButton>
             </IonButtons>
           </IonToolbar>
-        </IonHeader> // add spacing
+        </IonHeader>
         {children}
       </IonPage>
     </>

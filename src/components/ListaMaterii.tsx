@@ -1,35 +1,43 @@
-import {Ora, Orar} from "../model/orar"
+import {Ora, OrarGrupa} from "../model/orar"
 import {IonAccordion, IonAccordionGroup, IonCheckbox, IonItem, IonLabel, IonList} from "@ionic/react"
-import {
-  getMaterieCheckedState,
-  getMaterii,
-  getSaptamanaFormat,
-  getTimeFormat,
-  MaterieHiddenState
-} from "../service/orarUtils"
-import {useState} from "react"
+import {getMaterieCheckedState, getMaterii, getSaptamanaFormat, getTimeFormat, setMaterieHidden as setMaterieHiddenModel, setOraHidden as setOraHiddenModel, MaterieHiddenState} from "../service/orarUtils"
+import {useEffect, useRef, useState} from "react"
 
 interface ListaMateriiProps {
-  orar: Orar
-  setOrar: (orar: Orar) => void
+  orar: OrarGrupa
+  setOrar: (orar: OrarGrupa) => void
   grupa?: string
 }
 
 export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}) => {
   const materii = getMaterii(orar)
 
+  const parentAccordion = useRef()
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null)
 
-  const setMaterieHidden = (materie: string, hidden: boolean) => {
-    // toate orele de la aceasta materie
-    const ore = orar.ore.filter((ora) => ora.numeMaterie === materie).map((ora) => ({...ora, hidden: !hidden}))
-    const newOrar = {...orar, ore: [...orar.ore.filter((ora) => ora.numeMaterie !== materie), ...ore]}
+  useEffect(() => {
+    // close all accordions when the component is mounted
+    if(!parentAccordion.current)
+      return
+    // @ts-ignore
+    parentAccordion.current.value = 'list'
+  }, [])
+
+  const setMaterieHidden = (materie: string, checked: boolean) => {
+    const newOrar = setMaterieHiddenModel(orar, materie, !checked)
     setOrar(newOrar)
   }
 
-  const setOraHidden = (ora: Ora, hidden: boolean) => {
-    const newOrar = {...orar, ore: orar.ore.map((o) => o === ora ? {...o, hidden: !hidden} : o)}
+  const setOraHidden = (ora: Ora, checked: boolean) => {
+    const newOrar = setOraHiddenModel(orar, ora, !checked)
     setOrar(newOrar)
+  }
+
+  const onParentAccordionChange = (e) => {
+    // get if the accordion is open or closed
+    const value = e.detail.value
+    if(value === null)
+      setActiveAccordion(null)
   }
 
   const onChildAccordionChange = (materie: string) => (e) => {
@@ -47,7 +55,7 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}
   }
 
   return (
-    <IonAccordionGroup value="list">
+    <IonAccordionGroup ref={parentAccordion} onIonChange={onParentAccordionChange}>
       <IonAccordion value="list">
         <IonItem slot="header">
           <IonLabel>Lista materii: {grupa}</IonLabel>

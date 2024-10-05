@@ -1,41 +1,33 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {Ora, Orar, Source} from "../model/orar"
+import { Orar, OrarGrupa} from "../model/orar"
 import {RootState} from "../store"
-import {saveOrarDataToStorage} from "../storage/orarData";
-import {getAcademicYear, getSemester} from "../service/orarUtils";
-
-export interface OrarDataProps {
-  source?: Source
-  semigrupa?: string
-  orar?: Orar
-  oreAdaugate?: Ora[]
-  oreSterse?: Ora[]
-  oreModificate?: Ora[]
-}
+import {getAcademicYear, getSemester} from "../service/orarUtils"
 
 const initialState = {
-  source: {an: getAcademicYear(), semestru: getSemester(), grupa: ""},
-  semigrupa: null,
-  orar: null
-} as OrarDataProps
+  mainOrar: {
+    ore: [],
+    source: {an: getAcademicYear(), semestru: getSemester(), grupa: ""},
+  } as OrarGrupa,
+  orareSuplimentare: [],
+  orePersonale: []
+} as Orar
 
 export const orarDataSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    setOrarData: (state, action: PayloadAction<OrarDataProps>) => {
+    setOrarData: (state, action: PayloadAction<Orar>) => {
       if(!action.payload)
         return
-
-      state.source.an = action.payload.source?.an ?? state.source.an
-      state.source.semestru = action.payload.source?.semestru ?? state.source.semestru
-      state.source.grupa = action.payload.source?.grupa ?? state.source.grupa
-      state.semigroupa = action.payload.semigrupa ?? state.semigroupa
-      state.orar = action.payload.orar ?? state.orar
+      // state.mainOrar = action.payload.mainOrar
+      // state.orareSuplimentare = action.payload.orareSuplimentare
+      // state.orePersonale = action.payload.orePersonale
+      // state.lastUpdate = action.payload.lastUpdate
+      return action.payload
     }
   }
 })
 
 export const {setOrarData} = orarDataSlice.actions
 export default orarDataSlice.reducer
-export const orarDataSelector = (state: RootState) => state.orarData
+export const orarDataSelector = (state: RootState): Orar => state.orarData

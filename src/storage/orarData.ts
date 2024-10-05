@@ -1,12 +1,12 @@
 import { Preferences } from '@capacitor/preferences'
-import {OrarDataProps} from "../reducers/orarData"
+import {Orar} from "../model/orar"
 
-export const getOrarDataFromStorage = async (): Promise<OrarDataProps> => {
+export const getOrarDataFromStorage = async (): Promise<Orar> => {
     return await Preferences.get({ key: 'orarData' }).then(data => {
         if (!data.value)
             return null
         let orarData = JSON.parse(data.value)
-        orarData = {...orarData, orar: {...orarData.orar, lastUpdate: new Date(orarData.orar.lastUpdate)}}
+        orarData = {...orarData, lastUpdate: new Date(orarData.lastUpdate)}
         return orarData
     })
 }
