@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react"
-import {setOrarData as setOrarDataRedux, orarDataSelector} from "../reducers/orarData"
+import {orarDataSelector, setOrarData as setOrarDataRedux} from "../reducers/orarData"
 import {useAppDispatch, useAppSelector} from "../store"
-import {IonButton, IonContent, IonIcon, IonInput, IonLabel, IonList, IonSelect, IonSelectOption} from "@ionic/react"
-import {refresh, save, download, close} from "ionicons/icons"
+import {IonButton, IonContent, IonIcon, IonInput, IonLabel, IonSelect, IonSelectOption} from "@ionic/react"
+import {download, refresh} from "ionicons/icons"
 import {fetchOrar} from "../service/scrapper"
 import {saveOrarDataToStorage} from "../storage/orarData"
-import {equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru} from "../service/orarUtils"
+import {equalsOrar, equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru} from "../service/orarUtils"
 import {ListaMaterii} from "../components/ListaMaterii"
 import {Orar} from "../model/orar"
+import {SaveCancelButtons} from "../components/core/SaveCancelButtons"
+import {setCurrentTab} from "../reducers/navigation"
 
 export const OrarSettings = () => {
   const dispatch = useAppDispatch()
@@ -17,6 +19,11 @@ export const OrarSettings = () => {
   const [fieldTouched, setFieldTouched] = useState<string | null>(null)
   const [errorText, setErrorText] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<string[]>([])
+
+  useEffect(() => {
+    // @ts-ignore
+    dispatch(setCurrentTab({title: 'Configurează Orar'}))
+  }, [])
 
   useEffect(() => {
     setOrar(initialOrar)
@@ -39,7 +46,6 @@ export const OrarSettings = () => {
 
   const setAndValidateGrupa = (grupa: string) => {
     const newOrarData = setGrupa(orar, grupa)
-    console.log(newOrarData)
     setOrar(newOrarData)
     if(grupa.length < 2) {
       setFieldErrors([...fieldErrors, 'grupa'])
@@ -70,6 +76,22 @@ export const OrarSettings = () => {
     })
   }
 
+  const saveOrar = () => {
+    // check if the source is the same
+    if(!equalsOrarSource(orar, initialOrar)) {
+      // we need to fetch the orar again
+      refreshOrar() // this will also save the additional settings
+    }
+    else {
+      // we can save the orar locally
+      // @ts-ignore
+      dispatch(setOrarDataRedux(orar))
+      saveOrarDataToStorage(orar).catch((err) => {
+        console.error("Error saving orar data", err)
+      })
+    }
+  }
+
   const refreshAvailable = orarSourceExists(orar) && fieldErrors.length === 0
   const saveAvailable = orarExists(orar) && !equalsOrarSource(orar, initialOrar)
 
@@ -88,14 +110,7 @@ export const OrarSettings = () => {
               Last updated: {getLastUpdateText(orar)}
             </IonLabel>
             {saveAvailable ?
-              <>
-                <IonButton onClick={() => setOrar(initialOrar)} color="success">
-                  <IonIcon slot="start" icon={save}/> Save
-                </IonButton>
-                <IonButton onClick={() => setOrar(initialOrar)} color="primary">
-                  <IonIcon slot="start" icon={close}/> Cancel
-                </IonButton>
-              </> :
+              <SaveCancelButtons onSave={saveOrar} onCancel={() => setOrar(initialOrar)}/> :
               <IonButton onClick={refreshOrar} color="primary">
                 <IonIcon slot="start" icon={refresh}/> Refresh orar
               </IonButton>
@@ -132,7 +147,7 @@ export const OrarSettings = () => {
         onIonBlur={() => setFieldTouched('grupa')}
         errorText="Grupa este incorecta"
       />
-      {orarExists(orar) &&
+      {orarExists(orar) && equalsOrarSource(orar, initialOrar) &&
         <>
           <h3 style={{marginTop: "1em"}}>Setari suplimentare</h3>
           {/*<IonSelect*/}
@@ -146,6 +161,9 @@ export const OrarSettings = () => {
           {/*  <IonSelectOption value="2">2</IonSelectOption>*/}
           {/*</IonSelect>*/}
           <ListaMaterii orar={orar.mainOrar} grupa={initialOrar.mainOrar.source.grupa} setOrar={(orarGrupa) => setOrar(setOrarModel(orar, orarGrupa))} />
+          <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: '0.5em'}}>
+            {!equalsOrar(orar, initialOrar) && <SaveCancelButtons onSave={saveOrar} onCancel={() => setOrar(initialOrar)}/>}
+          </div>
         </>
       }
     </IonContent>

@@ -1,9 +1,17 @@
 import {IonContent} from "@ionic/react"
-import { useAppSelector} from "../store"
+import {useAppDispatch, useAppSelector} from "../store"
 import {orarDataSelector} from "../reducers/orarData"
+import {useEffect} from "react"
+import {setCurrentTab} from "../reducers/navigation"
 
 export const Test: React.FC = () => {
+  const dispatch = useAppDispatch()
   const orarData = useAppSelector(orarDataSelector)
+
+  useEffect(() => {
+    //@ts-ignore
+    dispatch(setCurrentTab({title: 'Test'}))
+  }, [])
 
   return (
     <IonContent>

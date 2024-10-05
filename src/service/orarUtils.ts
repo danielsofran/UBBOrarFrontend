@@ -1,5 +1,5 @@
 import {formatDatePart} from "./utils"
-import {Ora, Orar, OrarGrupa} from "../model/orar"
+import {CustomOra, Ora, Orar, OrarGrupa} from "../model/orar"
 
 export enum MaterieHiddenState {
   CHECKED = "checked",
@@ -55,7 +55,6 @@ export const setOrar = (orar: Orar, orarGrupa: OrarGrupa, lastUpdate?: Date): Or
 
 export const setMaterieHidden = (orarGrupa: OrarGrupa, materie: string, hidden: boolean) => {
   const ore = orarGrupa.ore.map(ora => ora.numeMaterie === materie ? {...ora, hidden} : ora)
-  console.log(ore)
   return {...orarGrupa, ore}
 }
 
@@ -64,16 +63,14 @@ export const setOraHidden = (orarGrupa: OrarGrupa, ora: Ora, hidden: boolean) =>
   return {...orarGrupa, ore}
 }
 
-// props + equals
+// props
 
 export const orarExists = (orar: Orar): boolean => {
   if (!orar)
     return false
-  const rez =
-    orar.mainOrar.ore.length > 0 ||
+  return orar.mainOrar.ore.length > 0 ||
     orar.orareSuplimentare.length > 0 ||
     orar.orePersonale.length > 0
-  return rez
 }
 
 export const orarAnSemestruExists = (orar: Orar): boolean => {
@@ -84,8 +81,69 @@ export const orarSourceExists = (orar: Orar): boolean => {
   return orarAnSemestruExists(orar) && orar.mainOrar.source.grupa !== ""
 }
 
+// equals
+
+export const equalsOra = (ora1: Ora, ora2: Ora): boolean => {
+  return ora1.ziua === ora2.ziua &&
+    ora1.hourStart === ora2.hourStart &&
+    ora1.minuteStart === ora2.minuteStart &&
+    ora1.hourEnd === ora2.hourEnd &&
+    ora1.minuteEnd === ora2.minuteEnd &&
+    ora1.saptamana === ora2.saptamana &&
+    ora1.numeMaterie === ora2.numeMaterie &&
+    ora1.tip === ora2.tip &&
+    ora1.sala === ora2.sala &&
+    ora1.profesor === ora2.profesor &&
+    ora1.formatie === ora2.formatie &&
+    ora1.hidden === ora2.hidden
+}
+
+export const equalsCustomOra = (ora1: CustomOra, ora2: CustomOra): boolean => {
+  return ora1.ziua === ora2.ziua &&
+    ora1.hourStart === ora2.hourStart &&
+    ora1.minuteStart === ora2.minuteStart &&
+    ora1.hourEnd === ora2.hourEnd &&
+    ora1.minuteEnd === ora2.minuteEnd &&
+    ora1.title === ora2.title &&
+    ora1.details === ora2.details &&
+    ora1.hidden === ora2.hidden
+}
+
 export const  equalsOrarSource = (orar1: Orar, orar2: Orar): boolean => {
   return orar1.mainOrar.source.an === orar2.mainOrar.source.an && orar1.mainOrar.source.semestru === orar2.mainOrar.source.semestru && orar1.mainOrar.source.grupa === orar2.mainOrar.source.grupa
+}
+
+export const equalsOrarGrupa = (orar1: OrarGrupa, orar2: OrarGrupa): boolean => {
+  if(orar1.source.an !== orar2.source.an)
+    return false
+  if(orar1.source.semestru !== orar2.source.semestru)
+    return false
+  if(orar1.source.grupa !== orar2.source.grupa)
+    return false
+  if (orar1.ore.length !== orar2.ore.length)
+    return false
+  for (let i = 0; i < orar1.ore.length; i++)
+    if (!equalsOra(orar1.ore[i], orar2.ore[i]))
+      return false
+  return true
+}
+
+export const equalsOrar = (orar1: Orar, orar2: Orar): boolean => {
+  if(orar1.mainOrar.ore.length !== orar2.mainOrar.ore.length)
+    return false
+  if(orar1.orareSuplimentare.length !== orar2.orareSuplimentare.length)
+    return false
+  if(orar1.orePersonale.length !== orar2.orePersonale.length)
+    return false
+  if(!equalsOrarGrupa(orar1.mainOrar, orar2.mainOrar))
+    return false
+  for(let i = 0; i < orar1.orareSuplimentare.length; i++)
+    if(!equalsOrarGrupa(orar1.orareSuplimentare[i], orar2.orareSuplimentare[i]))
+      return false
+  for(let i = 0; i < orar1.orePersonale.length; i++)
+    if(!equalsCustomOra(orar1.orePersonale[i], orar2.orePersonale[i]))
+      return false
+  return true
 }
 
 // date utils

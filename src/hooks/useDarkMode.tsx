@@ -19,7 +19,7 @@ export const useDarkMode = () => {
 
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)')
-    initializeDarkPalette(prefersDark.matches)
+    //initializeDarkPalette(prefersDark.matches)
 
     const setDarkPaletteFromMediaQuery = (mediaQuery: MediaQueryListEvent) => {
       initializeDarkPalette(mediaQuery.matches)

@@ -19,10 +19,6 @@ export const orarDataSlice = createSlice({
     setOrarData: (state, action: PayloadAction<Orar>) => {
       if(!action.payload)
         return
-      // state.mainOrar = action.payload.mainOrar
-      // state.orareSuplimentare = action.payload.orareSuplimentare
-      // state.orePersonale = action.payload.orePersonale
-      // state.lastUpdate = action.payload.lastUpdate
       return action.payload
     }
   }

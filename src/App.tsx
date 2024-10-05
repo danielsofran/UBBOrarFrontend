@@ -48,13 +48,28 @@ import {useAppDispatch, useAppSelector} from "./store"
 import {orarDataSelector, setOrarData} from "./reducers/orarData"
 import {useEffect} from "react"
 import {getOrarDataFromStorage} from "./storage/orarData"
+import {Preferences} from "./pages/Preferences"
+import {useDarkMode} from "./hooks/useDarkMode"
+import {setPreferences} from "./reducers/preferences"
+import {getPreferencesFromStorage} from "./storage/preferences"
 
 setupIonicReact();
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch()
+  const {isDarkMode, toggleDarkMode} = useDarkMode()
 
   useEffect(() => {
+    getPreferencesFromStorage().then((preferences) => {
+      if(preferences.darkMode !== isDarkMode)
+        toggleDarkMode()
+      // @ts-ignore
+      dispatch(setPreferences(preferences))
+    }).catch((err) => {
+      console.error("Error fetching preferences", err)
+      // @ts-ignore
+      dispatch(setPreferences({darkMode: isDarkMode}))
+    })
     // load orar data from storage
     getOrarDataFromStorage().then((orarData) => {
       // @ts-ignore
@@ -71,6 +86,7 @@ const App: React.FC = () => {
           <Layout>
             <Route exact path="/" component={Test} />
             <Route exact path="/orar-settings" component={OrarSettings} />
+            <Route exact path="/preferences" component={Preferences} />
             <Route exact path="/test" component={Test} />
           </Layout>
         </IonRouterOutlet>
