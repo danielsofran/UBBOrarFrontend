@@ -20,7 +20,7 @@ export const Layout: React.FC = ({children}) => {
       <IonMenu contentId="main-content">
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Setari</IonTitle>
+            <IonTitle>Orar UBB</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
@@ -45,9 +45,7 @@ export const Layout: React.FC = ({children}) => {
             </IonButtons>
           </IonToolbar>
         </IonHeader> // add spacing
-        <IonContent fullscreen className="ion-padding-horizontal">
-          {children}
-        </IonContent>
+        {children}
       </IonPage>
     </>
   )

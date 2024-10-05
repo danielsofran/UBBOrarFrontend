@@ -41,20 +41,38 @@ import '@ionic/react/css/palettes/dark.class.css'
 import {Layout} from "./Layout"
 import {Test} from "./pages/Test"
 import {OrarSettings} from "./pages/OrarSettings"
+import {useAppDispatch, useAppSelector} from "./store"
+import {orarDataSelector, setOrarData} from "./reducers/orarData"
+import {useEffect} from "react"
+import {getOrarDataFromStorage} from "./storage/orarData"
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    // load orar data from storage
+    getOrarDataFromStorage().then((orarData) => {
+      // @ts-ignore
+      dispatch(setOrarData(orarData))
+    }).catch((err) => {
+      console.error("Error fetching orar data", err)
+    })
+  }, [])
+
   return (
     <IonApp>
       <IonReactRouter>
+        <Layout>
         <IonRouterOutlet>
-          <Layout>
+
             <Route exact path="/" component={Test} />
             <Route exact path="/orar-settings" component={OrarSettings} />
             <Route exact path="/test" component={Test} />
-          </Layout>
+
         </IonRouterOutlet>
+        </Layout>
       </IonReactRouter>
     </IonApp>
   )

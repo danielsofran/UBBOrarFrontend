@@ -1,9 +1,11 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {setOrarData as setOrarDataRedux, orarDataSelector} from "../reducers/orarData"
 import {useAppDispatch, useAppSelector} from "../store"
 import {
+  IonAccordion,
+  IonAccordionGroup,
   IonButton,
-  IonCheckbox,
+  IonCheckbox, IonContent, IonIcon,
   IonInput,
   IonItem,
   IonLabel,
@@ -12,42 +14,32 @@ import {
   IonSelect,
   IonSelectOption
 } from "@ionic/react"
+import {refresh, save} from "ionicons/icons"
 import {fetchOrar} from "../service/scrapper"
-import {Orar, Source} from "../model/orar"
-
-interface OrarDataForm {
-  source: Source
-  orar?: Orar
-  semigrupa?: string
-}
-
-enum MaterieHiddenState {
-  CHECKED,
-  UNCHECKED,
-  INDETERMINATE
-}
+import {OrarData} from "../model/storage"
+import {saveOrarDataToStorage} from "../storage/orarData"
+import {getLastUpdateText, getMaterii} from "../service/orarUtils"
+import {ListaMaterii} from "../components/ListaMaterii"
 
 export const OrarSettings = () => {
   const dispatch = useAppDispatch()
-  const [orarData, setOrarData] = useState<OrarDataForm>(useAppSelector(orarDataSelector))
+  const initialOrarData = useAppSelector(orarDataSelector)
+  const [orarData, setOrarData] = useState<OrarData>(initialOrarData)
 
   const [fieldTouched, setFieldTouched] = useState<string | null>(null)
   const [errorText, setErrorText] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<string[]>([])
 
-  const getMaterieCheckedState = (materie: string) => {
-    const ore = orarData.orar!.ore.filter((ora) => ora.numeMaterie === materie)
-    const isCheck = ore.every((ora) => !ora.hidden)
-    const isUncheck = ore.every((ora) => ora.hidden)
-    return isCheck ? MaterieHiddenState.CHECKED : isUncheck ? MaterieHiddenState.UNCHECKED : MaterieHiddenState.INDETERMINATE
-  }
+  useEffect(() => {
+    setOrarData(initialOrarData)
+  }, [initialOrarData])
 
   const getCssFor = (field: string) =>
     `${fieldTouched === field && 'ion-touched'} ${fieldErrors.includes(field) && 'ion-invalid'} ${!fieldErrors.includes(field) && 'ion-valid'}`
 
   const setAn = (an: string) => {
-    orarData.source.an = an
-    setOrarData(orarData)
+    const newOrarData = {...orarData, source: {...orarData.source, an}}
+    setOrarData(newOrarData)
     if(!an.match(/^\d{4}$/)) {
       setFieldErrors([...fieldErrors, 'an'])
       return
@@ -58,8 +50,8 @@ export const OrarSettings = () => {
   }
 
   const setGrupa = (grupa: string) => {
-    orarData.source.grupa = grupa
-    setOrarData(orarData)
+    const newOrarData = {...orarData, source: {...orarData.source, grupa}}
+    setOrarData(newOrarData)
     if(grupa.length < 2) {
       setFieldErrors([...fieldErrors, 'grupa'])
       return
@@ -69,34 +61,51 @@ export const OrarSettings = () => {
     }
   }
 
-  const setMaterieHidden = (materie: string, hidden: boolean) => {
-    // toate orele de la aceasta materie
-    const ore = orarData.orar!.ore.filter((ora) => ora.numeMaterie === materie)
-    ore.forEach((ora) => ora.hidden = hidden)
-    orarData.orar!.ore = [...orarData.orar!.ore.filter((ora) => ora.numeMaterie !== materie), ...ore]
-    setOrarData(orarData)
-  }
-
   const refreshOrar = () => {
     const an = orarData.source.an!
     const semestru = orarData.source.semestru!
     const grupa = orarData.source.grupa!
     fetchOrar(an, semestru, grupa).then((orar) => {
-      setOrarData({...orarData, orar})
+      // orarData.orar = orar
+      const newOrarData = {...orarData, orar}
+      setOrarData(newOrarData)
       // @ts-ignore
-      dispatch(setOrarDataRedux(orarData))
+      dispatch(setOrarDataRedux(newOrarData))
+      saveOrarDataToStorage(newOrarData).catch((err) => {
+        console.error("Error saving orar data", err)
+      })
+      setErrorText(null)
     }).catch((err) => {
       setErrorText(`Nu s-a putut obtine orarul. Am căutat un orar pentru anul ${an}, semestrul ${semestru} și grupa ${grupa}. Eroare este: ${err}`)
+      console.error("Error fetching orar", err)
     })
   }
 
-  const refreshAvailable = orarData.source.an && orarData.source.semestru && orarData.source.grupa && fieldErrors.length === 0
+  const refreshAvailable =
+    orarData.source.an &&
+    orarData.source.semestru &&
+    orarData.source.grupa &&
+    fieldErrors.length === 0
+
+  const saveAvailable =
+    orarData.orar &&
+    (orarData.source.an !== initialOrarData.source.an || orarData.source.semestru !== initialOrarData.source.semestru || orarData.source.grupa !== initialOrarData.source.grupa)
 
   return (
-    <>
+    <IonContent className="ion-padding">
       <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: orarData.orar ? 'space-between' : 'center', marginBottom: 8}}>
-        {orarData.orar && <IonLabel>Last updated: {orarData.orar.lastUpdateText}</IonLabel>}
-        <IonButton disabled={!refreshAvailable} onClick={refreshOrar}>{orarData.orar ? 'Refresh' : 'Get'} orar</IonButton>
+        {orarData.orar &&
+            <IonLabel>
+              Last updated: {getLastUpdateText(orarData.orar)}
+            </IonLabel>
+        }
+        <IonButton disabled={!refreshAvailable} onClick={refreshOrar}>
+          <IonIcon
+            slot="start"
+            icon={saveAvailable ? save : refresh}
+          />
+          {orarData.orar ? saveAvailable ? 'Save' : 'Refresh orar' : 'Get orar'}
+        </IonButton>
       </div>
       <IonLabel color="danger">{errorText}</IonLabel>
 
@@ -113,7 +122,7 @@ export const OrarSettings = () => {
         label="Semestru"
         labelPlacement="floating"
         value={orarData.source.semestru}
-        onIonInput={(e) => { orarData.source.semestru = e.detail.value; setOrarData(orarData) }}
+        onIonChange={(e) => setOrarData({...orarData, source: {...orarData.source, semestru: e.detail.value}})}
       >
         <IonSelectOption value="1">1</IonSelectOption>
         <IonSelectOption value="2">2</IonSelectOption>
@@ -128,7 +137,7 @@ export const OrarSettings = () => {
         errorText="Grupa este incorecta"
       />
       {orarData.orar &&
-        <> {/* setari suplimentare dupa ce orarul este obtinut */}
+        <>
           <h3 style={{marginTop: "1em"}}>Setari suplimentare</h3>
           <IonSelect
             label="Semigrupa"
@@ -136,26 +145,13 @@ export const OrarSettings = () => {
             value={orarData.semigrupa}
             onIonInput={(e) => setOrarData({...orarData, semigrupa: e.detail.value})}
           >
-            <IonSelectOption value="12">Ambele</IonSelectOption>
+            <IonSelectOption value={null}>Ambele</IonSelectOption>
             <IonSelectOption value="1">1</IonSelectOption>
             <IonSelectOption value="2">2</IonSelectOption>
           </IonSelect>
-          <IonList>
-            <IonListHeader>Lista matrerii</IonListHeader>
-            {orarData.orar.materii.map((materie, index) => (
-              <IonItem key={index}>
-                <IonCheckbox
-                  slot="start"
-                  checked={getMaterieCheckedState(materie) === MaterieHiddenState.CHECKED}
-                  indeterminate={getMaterieCheckedState(materie) === MaterieHiddenState.INDETERMINATE}
-                  onIonChange={(e) => setMaterieHidden(materie, e.detail.checked)}
-                />
-                <IonLabel>{materie}</IonLabel>
-              </IonItem>
-            ))}
-          </IonList>
+          <ListaMaterii orar={orarData.orar} grupa={initialOrarData.source.grupa} setOrar={(orar) => setOrarData({...orarData, orar})} />
         </>
       }
-    </>
+    </IonContent>
   )
 }

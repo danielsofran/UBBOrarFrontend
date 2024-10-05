@@ -1,7 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {getAcademicYear, getSemester} from "../service/utils"
 import {Ora, Orar, Source} from "../model/orar"
 import {RootState} from "../store"
+import {saveOrarDataToStorage} from "../storage/orarData";
+import {getAcademicYear, getSemester} from "../service/orarUtils";
 
 export interface OrarDataProps {
   source?: Source
@@ -13,7 +14,7 @@ export interface OrarDataProps {
 }
 
 const initialState = {
-  source: new Source(getAcademicYear(), getSemester(), ""),
+  source: {an: getAcademicYear(), semestru: getSemester(), grupa: ""},
   semigrupa: null,
   orar: null
 } as OrarDataProps
@@ -23,6 +24,9 @@ export const orarDataSlice = createSlice({
   initialState,
   reducers: {
     setOrarData: (state, action: PayloadAction<OrarDataProps>) => {
+      if(!action.payload)
+        return
+
       state.source.an = action.payload.source?.an ?? state.source.an
       state.source.semestru = action.payload.source?.semestru ?? state.source.semestru
       state.source.grupa = action.payload.source?.grupa ?? state.source.grupa
