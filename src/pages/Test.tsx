@@ -17,7 +17,6 @@ export const Test: React.FC = () => {
 
   return (
     <IonContent className="ion-padding">
-      <h1>Test</h1>
       <OrarZi orar={orarData} zi={Ziua.VINERI}/>
     </IonContent>
   )

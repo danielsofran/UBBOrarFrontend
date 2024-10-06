@@ -4,7 +4,7 @@ import {RootState} from "../store"
 
 const initialState = {
   title: "Orar UBB",
-  showSOSButton: true,
+  showSOSButton: false,
   filterMenu: FilterMenu.ORAR_ZI
 } as NavigationState
 

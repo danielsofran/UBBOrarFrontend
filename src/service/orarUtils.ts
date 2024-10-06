@@ -1,6 +1,6 @@
 import {formatDatePart} from "./utils"
 import {BaseOra, CustomOra, Ora, Orar, OrarGrupa, OraType, Ziua} from "../model/orar"
-import {DateLimit} from "./orarGridUtils"
+import {DateInterval} from "./orarGridUtils"
 
 export enum MaterieHiddenState {
   CHECKED = "checked",
@@ -106,7 +106,7 @@ export const orarSourceExists = (orar: Orar): boolean => {
   return orarAnSemestruExists(orar) && orar.mainOrar.source.grupa !== ""
 }
 
-export const orarFirstLastHourInDay = (orar: Orar, ziua: Ziua): DateLimit | undefined => {
+export const orarFirstLastHourInDay = (orar: Orar, ziua: Ziua): DateInterval | undefined => {
   const ore = getOrarOre(orar).filter(ora => ora.ziua === ziua && !ora.hidden)
   if (ore.length === 0)
     return

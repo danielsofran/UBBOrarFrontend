@@ -8,6 +8,13 @@ export const getHourFloat = (date: Date) => {
   return date.getHours() + date.getMinutes() / 60
 }
 
+export const getHourFloatForOra = (ora: BaseOra) => {
+  return {
+    start: parseInt(ora.hourStart) + parseInt(ora.minuteStart) / 60,
+    end: parseInt(ora.hourEnd) + parseInt(ora.minuteEnd) / 60
+  }
+}
+
 const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata']
 export const dateToZiua = (date: Date) => {
   return days[date.getDay()] as Ziua
@@ -44,4 +51,17 @@ export const getSaptamanaFormat = (ora: Ora) => {
   if(ora.saptamana === "2")
     return "S2"
   return "S1/S2"
+}
+
+export const convertToDateInterval = (ora: BaseOra) => {
+  return new Date(0, 0, parseInt(ora.hourEnd), parseInt(ora.hourStart), parseInt(ora.minuteStart), parseInt(ora.minuteEnd))
+}
+
+export const convertFromDateInterval = (date: Date) => {
+  return {
+    hourStart: formatDatePart(date.getHours()),
+    minuteStart: formatDatePart(date.getMinutes()),
+    hourEnd: formatDatePart(date.getDate()),
+    minuteEnd: formatDatePart(date.getSeconds())
+  }
 }
