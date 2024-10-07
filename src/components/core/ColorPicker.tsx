@@ -72,7 +72,15 @@ export const ColorPicker = ({label, color, onChange}: ColorPickerProps) => {
           <IonGrid>
             <IonRow>
               {preferredColors.map((preferredColor, index) => (
-                <IonCol key={index} size="3">
+                <IonCol
+                  key={index}
+                  size="3"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
                   <IonButton
                     color={preferredColor}
                     onClick={() => handleColorChoice(preferredColor)}
