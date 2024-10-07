@@ -4,6 +4,10 @@ import {RootState} from "../store"
 
 const initialState = {
   darkMode: false,
+  colorCurs: 'danger',
+  colorSeminar: 'warning',
+  colorLaborator: 'success',
+  colorPersonal: 'quaternary',
 } as Preferences
 
 export const preferencesSlice = createSlice({

@@ -20,7 +20,7 @@ export interface BaseOra {
   minuteStart: string
   hourEnd: string
   minuteEnd: string
-  saptamana?: "1" | "2" | " "
+  saptamana: "1" | "2" | " "
   hidden: boolean
 }
 

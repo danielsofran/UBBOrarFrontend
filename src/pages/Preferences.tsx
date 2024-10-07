@@ -1,5 +1,5 @@
 import {useAppDispatch, useAppSelector} from "../store"
-import {preferencesSelector} from "../reducers/preferences"
+import {preferencesSelector, setPreferences} from "../reducers/preferences"
 import {useEffect, useState} from "react"
 import {setCurrentTab} from "../reducers/navigation"
 import {IonContent, IonItem, IonList, IonListHeader, IonToggle} from "@ionic/react"
@@ -9,15 +9,8 @@ import {ColorPicker} from "../components/core/ColorPicker";
 
 export const Preferences = () => {
   const dispatch = useAppDispatch()
-  const initialPreferences = useAppSelector(preferencesSelector)
-  const [preferences, setPreferences] = useState(initialPreferences)
+  const preferences = useAppSelector(preferencesSelector)
   const {isDarkMode, toggleDarkMode} = useDarkMode()
-
-  const [color, setColor] = useState<string>('primary') // TODO: refactor the state
-
-  useEffect(() => {
-    setPreferences(initialPreferences)
-  }, [initialPreferences])
 
   useEffect(() => {
     //@ts-ignore
@@ -28,8 +21,15 @@ export const Preferences = () => {
     if(darkMode !== isDarkMode) {
       toggleDarkMode()
     }
-    setPreferences({...preferences, darkMode})
     savePreferencesToStorage({...preferences, darkMode})
+      .then(r => console.log("Saved preferences"))
+  }
+
+  const setPreference = (key: string, value: any) => {
+    const newPreferences = {...preferences, [key]: value}
+    // @ts-ignore
+    dispatch(setPreferences(newPreferences))
+    savePreferencesToStorage(newPreferences)
       .then(r => console.log("Saved preferences"))
   }
 
@@ -47,9 +47,19 @@ export const Preferences = () => {
           </IonToggle>
         </IonItem>
         <ColorPicker
-          label="Primary color"
-          color={color}
-          onChange={(color) => setColor(color)}
+          label="Culoare Curs"
+          color={preferences.colorCurs}
+          onChange={(color) => setPreference('colorCurs', color)}
+        />
+        <ColorPicker
+          label="Culoare Seminar"
+          color={preferences.colorSeminar}
+          onChange={(color) => setPreference('colorSeminar', color)}
+        />
+        <ColorPicker
+          label="Culoare Laborator"
+          color={preferences.colorLaborator}
+          onChange={(color) => setPreference('colorLaborator', color)}
         />
       </IonList>
     </IonContent>

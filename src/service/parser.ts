@@ -19,13 +19,14 @@ export const parseOrarHtml = (html: string, source: Source): ParseResult => {
       throw new Error('Invalid HTML')
     const timeStart = timeText[0].split(':')
     const timeEnd = timeText[1].split(':')
-    return {
+    const saptamana = cells[2].textContent.replaceAll(String.fromCharCode(160), " ")
+    const rez = {
       ziua: cells[0].textContent as Ziua,
       hourStart: timeStart[0],
       minuteStart: timeStart[1],
       hourEnd: timeEnd[0],
       minuteEnd: timeEnd[1],
-      saptamana: cells[2].textContent === '' ? undefined : cells[2].textContent as "1" | "2",
+      saptamana: saptamana,
       numeMaterie: cells[3].textContent,
       tip: cells[4].textContent as Tip,
       sala: cells[5].textContent,
@@ -33,6 +34,7 @@ export const parseOrarHtml = (html: string, source: Source): ParseResult => {
       formatie: cells[7].textContent,
       hidden: false
     } as Ora
+    return rez
   })
   // find the text after "Ultima actualizare: (date)"
   const lastUpdateText = doc.body.textContent.match(/Ultima actualizare: (\d{1,2}.\d{1,2}.\d{4})/)

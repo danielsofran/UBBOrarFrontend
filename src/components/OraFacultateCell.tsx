@@ -1,5 +1,7 @@
-import {Ora} from "../model/orar"
+import {Ora, Tip} from "../model/orar"
 import {IonText} from "@ionic/react"
+import {preferencesSelector} from "../reducers/preferences"
+import {useAppSelector} from "../store"
 
 interface OraFacultateCellProps {
   ora: Ora
@@ -12,6 +14,7 @@ const cellBorderRadius = 10
 const cellFontSize = '1.1em'
 
 export const OraFacultateCell = (props: OraFacultateCellProps) => {
+  const preferences = useAppSelector(preferencesSelector)
   const {numeMaterie, tip, sala, profesor} = props.ora
   const oraStart = `${props.ora.hourStart}:${props.ora.minuteStart}`
   const oraEnd = `${props.ora.hourEnd}:${props.ora.minuteEnd}`
@@ -22,13 +25,22 @@ export const OraFacultateCell = (props: OraFacultateCellProps) => {
     right: cellPadding * 2,
   }
 
+  const getColor = () => {
+    switch(tip) {
+      case Tip.CURS: return preferences.colorCurs
+      case Tip.SEMINAR: return preferences.colorSeminar
+      case Tip.LABORATOR: return preferences.colorLaborator
+      default: return 'black'
+    }
+  }
+
   return (
     <div
       style={{
         position: 'relative',
         width: '100%', height: '100%',
         fontSize: cellFontSize,
-        backgroundColor: 'rgba(105,245,66,0.60)',
+        backgroundColor: `var(--ion-color-${getColor()})`,
         borderRadius: cellBorderRadius,
         padding: cellPadding,
         zIndex: 6,
@@ -41,7 +53,8 @@ export const OraFacultateCell = (props: OraFacultateCellProps) => {
             <h4 style={{margin: 0}}>{numeMaterie}</h4>
             <IonText>{tip} - {sala}</IonText>
           </div>
-          <IonText style={{position: 'absolute', bottom: cellPadding, left: cellPadding * 2}}>{oraStart} - {oraEnd}</IonText>
+          <IonText style={{position: 'absolute', bottom: cellPadding, left: cellPadding * 2}}>{oraStart}</IonText>
+          <IonText style={{position: 'absolute', bottom: cellPadding, right: cellPadding * 2}}>{oraEnd}</IonText>
         </div> :
         <div style={{height: "70%", marginLeft: cellPadding, marginRight: cellPadding}}>
           <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>

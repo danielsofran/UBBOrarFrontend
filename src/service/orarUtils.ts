@@ -106,8 +106,7 @@ export const orarSourceExists = (orar: Orar): boolean => {
   return orarAnSemestruExists(orar) && orar.mainOrar.source.grupa !== ""
 }
 
-export const orarFirstLastHourInDay = (orar: Orar, ziua: Ziua): DateInterval | undefined => {
-  const ore = getOrarOre(orar).filter(ora => ora.ziua === ziua && !ora.hidden)
+export const orarFirstLastHourInDay = (ore: BaseOra[]): DateInterval | undefined => {
   if (ore.length === 0)
     return
   let firstHour = ore[0].hourStart, lastHour = ore[0].hourEnd, firstMinute = ore[0].minuteStart, lastMinute = ore[0].minuteEnd

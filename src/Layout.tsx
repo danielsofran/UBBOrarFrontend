@@ -4,6 +4,8 @@ import {useAppSelector} from "./store"
 import {navigationSelector} from "./reducers/navigation"
 import {orarDataSelector} from "./reducers/orarData"
 import {orarExists} from "./service/orarUtils"
+import {FilterMenu} from "./model/navigation"
+import {FilterOrarDay} from "./components/FilterOrarDay"
 
 const MenuEntry = ({title, path, menu = 'left-menu'}: {title: string, path: string, menu?: string}) => (
   <IonMenuToggle autoHide={false} menu={menu}>
@@ -25,12 +27,25 @@ export const Layout: React.FC = ({children}) => {
         </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
-            <MenuEntry title="Test" path="/test" />
+            <MenuEntry title="Orar" path="/orar" />
             <MenuEntry title="Configurează Orar" path="/orar-settings" />
             <MenuEntry title="Preferințe" path="/preferences" />
+            {/*<MenuEntry title="Test" path="/test" />*/}
           </IonList>
         </IonContent>
       </IonMenu>
+      {navigationState.filterMenu === FilterMenu.ORAR_ZI &&
+        <IonMenu side="end" menuId="right-menu" contentId="main-content">
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Filtrează</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <FilterOrarDay />
+          </IonContent>
+        </IonMenu>
+      }
       <IonPage id="main-content">
         <IonHeader>
           <IonToolbar>
@@ -46,10 +61,12 @@ export const Layout: React.FC = ({children}) => {
                 </IonButton>
               }
               {navigationState.filterMenu !== undefined &&
-                <IonButton>
-                  <IonIcon slot="end" icon={arrowForward} />
-                  Filtre
-                </IonButton>
+                <IonMenuToggle autoHide={false} menu="right-menu">
+                  <IonButton>
+                    <IonIcon slot="end" icon={arrowForward} />
+                    Filtre
+                  </IonButton>
+                </IonMenuToggle>
               }
             </IonButtons>
           </IonToolbar>

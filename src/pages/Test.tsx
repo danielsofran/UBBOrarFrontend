@@ -5,10 +5,12 @@ import {useEffect} from "react"
 import {setCurrentTab} from "../reducers/navigation"
 import {OrarZi} from "../components/OrarZi"
 import {Ziua} from "../model/orar"
+import {getOrarOre} from "../service/orarUtils"
 
 export const Test: React.FC = () => {
   const dispatch = useAppDispatch()
   const orarData = useAppSelector(orarDataSelector)
+  const ore = getOrarOre(orarData).filter(ora => ora.ziua === Ziua.VINERI && !ora.hidden)
 
   useEffect(() => {
     //@ts-ignore
@@ -16,8 +18,10 @@ export const Test: React.FC = () => {
   }, [])
 
   return (
-    <IonContent className="ion-padding">
-      <OrarZi orar={orarData} zi={Ziua.VINERI}/>
+    <IonContent>
+      <div style={{marginRight: '10px'}}>
+      <OrarZi ore={ore} zi={Ziua.VINERI}/>
+      </div>
     </IonContent>
   )
 }

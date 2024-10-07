@@ -52,6 +52,10 @@ import {Preferences} from "./pages/Preferences"
 import {useDarkMode} from "./hooks/useDarkMode"
 import {setPreferences} from "./reducers/preferences"
 import {getPreferencesFromStorage} from "./storage/preferences"
+import {getFilterDataFromStorage} from "./storage/filterData"
+import {setFilterData} from "./reducers/filter"
+import {updateData} from "./model/filter"
+import {OrarDayView} from "./pages/OrarDayView"
 
 setupIonicReact();
 
@@ -70,6 +74,16 @@ const App: React.FC = () => {
       // @ts-ignore
       dispatch(setPreferences({darkMode: isDarkMode}))
     })
+
+    // load filter data from storage
+    getFilterDataFromStorage().then((filterData) => {
+      const updated = updateData(filterData)
+      // @ts-ignore
+      dispatch(setFilterData(updated))
+    }).catch((err) => {
+      console.error("Error fetching filter data", err)
+    })
+
     // load orar data from storage
     getOrarDataFromStorage().then((orarData) => {
       // @ts-ignore
@@ -77,6 +91,8 @@ const App: React.FC = () => {
     }).catch((err) => {
       console.error("Error fetching orar data", err)
     })
+
+
   }, [])
 
   return (
@@ -84,7 +100,8 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonRouterOutlet>
           <Layout>
-            <Route exact path="/" component={Test} />
+            <Route exact path="/" component={OrarDayView} />
+            <Route exact path="/orar" component={OrarDayView} />
             <Route exact path="/orar-settings" component={OrarSettings} />
             <Route exact path="/preferences" component={Preferences} />
             <Route exact path="/test" component={Test} />

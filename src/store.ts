@@ -3,12 +3,14 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux"
 import orarData from "./reducers/orarData"
 import navigation from "./reducers/navigation"
 import preferences from "./reducers/preferences"
+import filter from "./reducers/filter"
 
 export const store = configureStore({
   reducer: {
     orarData,
     navigation,
-    preferences
+    preferences,
+    filter,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,

@@ -5,7 +5,7 @@ import {RootState} from "../store"
 const initialState = {
   title: "Orar UBB",
   showSOSButton: false,
-  filterMenu: FilterMenu.ORAR_ZI
+  filterMenu: undefined
 } as NavigationState
 
 const navigationSlice = createSlice({
@@ -16,8 +16,8 @@ const navigationSlice = createSlice({
       if(!action.payload)
         return
       state.title = action.payload.title
-      state.showSOSButton = action.payload.showSOSButton ?? true
-      state.filterMenu = action.payload.filterMenu
+      state.showSOSButton = action.payload.showSOSButton ?? initialState.showSOSButton
+      state.filterMenu = action.payload.filterMenu ?? initialState.filterMenu
     }
   }
 })

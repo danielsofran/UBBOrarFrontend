@@ -1,38 +1,26 @@
 import {BaseOra, Orar, Ziua} from "../model/orar"
 import {useCallback, useEffect, useMemo} from "react"
 import {getOrarOre, getOraType, orarFirstLastHourInDay} from "../service/orarUtils"
-import {createHoursBlocks, orarClashes} from "../service/orarGridUtils"
+import {createHoursBlocks, getOraDuration, orarClashes} from "../service/orarGridUtils"
 import {IonCol, IonContent, IonGrid, IonRow, IonText} from "@ionic/react"
 import {NowMarker} from "./core/NowMarker"
 import {OraCell} from "./OraCell"
 
 interface OrarZiProps {
-  orar: Orar
-  zi: Ziua
+  ore: BaseOra[]
 }
 
-const DisplayTime = ({ora}: {ora: BaseOra}) => {
-  return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-      <IonText>{ora.hourStart}:{ora.minuteStart}</IonText>
-      <IonText>{ora.hourEnd}:{ora.minuteEnd}</IonText>
-    </div>
-  )
-}
-
-export const oneHourHeight = window.innerHeight / 12
+export const oneHourHeight = window.innerHeight / 11
 export const orarPadding = 20
 
 export const OrarZi = (props: OrarZiProps) => {
-  const dateLimit = orarFirstLastHourInDay(props.orar, props.zi)
+  const dateLimit = orarFirstLastHourInDay(props.ore)
   if(!dateLimit) return null
   const hoursBlocks = createHoursBlocks(dateLimit)
 
   const oreByInterval = useMemo(() => {
-    const ore = getOrarOre(props.orar)
-      .filter(ora => ora.ziua === props.zi && !ora.hidden)
-    return orarClashes(ore)
-  }, [props.orar, props.zi])
+    return orarClashes(props.ore)
+  }, [props.ore])
 
   const scrollToNow = useCallback(() => {
     const nowMarker = document.getElementById('now-marker')
@@ -99,7 +87,7 @@ export const OrarZi = (props: OrarZiProps) => {
                   gap: orarPadding,
                 }}>
                   {ore.map((ora, index) => ( // TODO: use swipe js
-                      <OraCell ora={ora} compact={ore.length > 1} key={index} />
+                      <OraCell ora={ora} compact={ore.length > 1 || getOraDuration(ora) < 2} key={index} />
                     ))
                   }
                 </div>

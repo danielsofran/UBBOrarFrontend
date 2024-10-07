@@ -195,3 +195,9 @@ export const createHoursBlocks = (dateLimit: DateInterval, hoursInBlock = 2): Ho
     breakpoints: blocks
   }
 }
+
+export const getOraDuration = (ora: BaseOra): number => { // returns the duration in hours
+  const start = parseInt(ora.hourStart) + parseInt(ora.minuteStart) / 60
+  const end = parseInt(ora.hourEnd) + parseInt(ora.minuteEnd) / 60
+  return end - start
+}

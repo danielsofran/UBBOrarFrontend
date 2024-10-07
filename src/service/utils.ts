@@ -1,4 +1,6 @@
-import {BaseOra, Ora, Ziua} from "../model/orar"
+import {BaseOra, Ora, OraType, Ziua} from "../model/orar"
+import {FilterData} from "../model/filter"
+import {getOraType} from "./orarUtils"
 
 export function formatDatePart(part: number) {
   return part.toString().padStart(2, '0')
@@ -15,7 +17,7 @@ export const getHourFloatForOra = (ora: BaseOra) => {
   }
 }
 
-const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata']
+const days = ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă']
 export const dateToZiua = (date: Date) => {
   return days[date.getDay()] as Ziua
 }
@@ -64,4 +66,33 @@ export const convertFromDateInterval = (date: Date) => {
     hourEnd: formatDatePart(date.getDate()),
     minuteEnd: formatDatePart(date.getSeconds())
   }
+}
+
+export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string) => {
+  //console.log(ore)
+  return ore.filter(ora => {
+    if(filterData.ziua !== " " && ora.ziua !== filterData.ziua)
+      return false
+    // @ts-ignore
+    if(ora.numeMaterie.startsWith("Instrumente"))
+    {
+      console.log(filterData.saptamana, ora.saptamana, filterData.saptamana === ora.saptamana)
+      //debugger
+    }
+    if(filterData.saptamana === " " || ora.saptamana === " ");
+    else if(ora.saptamana !== filterData.saptamana)
+      return false
+    const oraType = getOraType(ora)
+    if(oraType === OraType.PERSONAL)
+      return true
+    const oraF = ora as Ora
+    if(filterData.tip === " " || oraF.tip === " ");
+    else if(oraF.tip !== filterData.tip)
+      return false
+    if(filterData.semigrupa === " ") // TODO: FIX THIS
+      return true
+    if(oraF.formatie.startsWith(grupa) && !oraF.formatie.endsWith("/"+filterData.semigrupa)) // grupa/semigrupa
+      return false
+    return true
+  })
 }
