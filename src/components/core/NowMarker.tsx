@@ -1,11 +1,13 @@
 import {oneHourHeight, orarPadding} from "../OrarZi"
+import {useEffect, useState} from "react";
+import {getHourFloat} from "../../service/utils";
 
 interface NowMarkerProps {
   breakpoints: number[]
 }
 
 export const NowMarker = (props: NowMarkerProps) => {
-  const realNowHour = 10.2 //new Date().getHours() + new Date().getMinutes() / 60
+  const [realNowHour, setRealNowHour] = useState<number>(getHourFloat(new Date()))
   const firstHour = props.breakpoints[0], lastHour = props.breakpoints[props.breakpoints.length - 1]
   const nowHour = realNowHour < firstHour ? firstHour :
     realNowHour > lastHour ? lastHour : realNowHour
@@ -14,6 +16,14 @@ export const NowMarker = (props: NowMarkerProps) => {
     if (bp === nowHour) return acc + 0.4
     return acc
   }, -1)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRealNowHour(getHourFloat(new Date()))
+    }, 2 * 60 * 1000) // in milliseconds
+
+    return () => clearInterval(interval)
+  }, []);
 
   return (
     <>
