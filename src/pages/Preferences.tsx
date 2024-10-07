@@ -5,12 +5,15 @@ import {setCurrentTab} from "../reducers/navigation"
 import {IonContent, IonItem, IonList, IonListHeader, IonToggle} from "@ionic/react"
 import {useDarkMode} from "../hooks/useDarkMode"
 import {savePreferencesToStorage} from "../storage/preferences"
+import {ColorPicker} from "../components/core/ColorPicker";
 
 export const Preferences = () => {
   const dispatch = useAppDispatch()
   const initialPreferences = useAppSelector(preferencesSelector)
   const [preferences, setPreferences] = useState(initialPreferences)
   const {isDarkMode, toggleDarkMode} = useDarkMode()
+
+  const [color, setColor] = useState<string>('primary') // TODO: refactor the state
 
   useEffect(() => {
     setPreferences(initialPreferences)
@@ -43,6 +46,11 @@ export const Preferences = () => {
             Dark Mode
           </IonToggle>
         </IonItem>
+        <ColorPicker
+          label="Primary color"
+          color={color}
+          onChange={(color) => setColor(color)}
+        />
       </IonList>
     </IonContent>
   )
