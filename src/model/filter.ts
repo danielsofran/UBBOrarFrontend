@@ -3,7 +3,7 @@ import {dateToZiua} from "../service/utils"
 
 export interface FilterData {
   ziua: Ziua
-  saptamana: "1" | "2"
+  saptamana: "1" | "2" | " "
   semigrupa: "1" | "2" | " "
   tip: Tip | " "
   // metadata

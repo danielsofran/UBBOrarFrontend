@@ -20,7 +20,7 @@ export const Test: React.FC = () => {
   return (
     <IonContent>
       <div style={{marginRight: '10px'}}>
-      <OrarZi ore={ore} zi={Ziua.VINERI}/>
+      <OrarZi ore={ore}/>
       </div>
     </IonContent>
   )

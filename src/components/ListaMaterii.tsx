@@ -34,14 +34,14 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}
     setOrar(newOrar)
   }
 
-  const onParentAccordionChange = (e) => {
+  const onParentAccordionChange = (e: any) => {
     // get if the accordion is open or closed
     const value = e.detail.value
     if(value === null)
       setActiveAccordion(null)
   }
 
-  const onChildAccordionChange = (materie: string) => (e) => {
+  const onChildAccordionChange = (materie: string) => (e: any) => {
     // get if the accordion is open or closed
     const value = e.detail.value
     if(['on', 'off'].includes(value)) {

@@ -6,7 +6,6 @@ import {useAppSelector} from "../store"
 interface OraFacultateCellProps {
   ora: Ora
   compact?: boolean
-  flex?: number
 }
 
 const cellPadding = 3

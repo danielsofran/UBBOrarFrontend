@@ -13,7 +13,7 @@ const MenuEntry = ({title, path, menu = 'left-menu'}: {title: string, path: stri
   </IonMenuToggle>
 )
 
-export const Layout: React.FC = ({children}) => {
+export const Layout = ({children}) => {
   const navigationState = useAppSelector(navigationSelector)
   const orarData = useAppSelector(orarDataSelector)
 

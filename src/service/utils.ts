@@ -71,7 +71,7 @@ export const convertFromDateInterval = (date: Date) => {
 export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string) => {
   //console.log(ore)
   return ore.filter(ora => {
-    if(filterData.ziua !== " " && ora.ziua !== filterData.ziua)
+    if(ora.ziua !== filterData.ziua)
       return false
     // @ts-ignore
     if(ora.numeMaterie.startsWith("Instrumente"))
@@ -79,14 +79,14 @@ export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: stri
       console.log(filterData.saptamana, ora.saptamana, filterData.saptamana === ora.saptamana)
       //debugger
     }
-    if(filterData.saptamana === " " || ora.saptamana === " ");
+    if(filterData.saptamana === " " || ora.saptamana === " "){}
     else if(ora.saptamana !== filterData.saptamana)
       return false
     const oraType = getOraType(ora)
     if(oraType === OraType.PERSONAL)
       return true
     const oraF = ora as Ora
-    if(filterData.tip === " " || oraF.tip === " ");
+    if(filterData.tip === " "){}
     else if(oraF.tip !== filterData.tip)
       return false
     if(filterData.semigrupa === " ") // TODO: FIX THIS
