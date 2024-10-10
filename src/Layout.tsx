@@ -1,4 +1,4 @@
-import {IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonMenuToggle, IonPage, IonTitle, IonToolbar} from "@ionic/react"
+import {IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonList, IonMenu, IonMenuButton, IonMenuToggle, IonPage, IonTitle, IonToolbar} from "@ionic/react"
 import {arrowForward, warning} from "ionicons/icons"
 import {useAppSelector} from "./store"
 import {navigationSelector} from "./reducers/navigation"
@@ -22,6 +22,7 @@ export const Layout = ({children}) => {
       <IonMenu menuId="left-menu" contentId="main-content">
         <IonHeader>
           <IonToolbar>
+            <IonImg slot="start" src="/ubb.png" style={{width: "auto", height: 40, marginLeft: "1em"}} />
             <IonTitle>Orar UBB</IonTitle>
           </IonToolbar>
         </IonHeader>

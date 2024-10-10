@@ -27,12 +27,21 @@ export const OrarDayView: React.FC = () => {
     setOre(applyFilters(ore, filterData, orarData.mainOrar.source.grupa))
   }, [filterData, orarData])
 
+  const screenProps = ore.length <= 0 ? {width: "100%", height: "100%"} : {}
+
   return (
     <IonContent>
-      <div style={{marginRight: '10px'}}>
+      <div style={{marginRight: '10px', ...screenProps}}>
         {orarSourceExists(orarData) ?
-          <OrarZi ore={ore}/> :
-          <>
+          ore.length > 0 ?
+            <OrarZi ore={ore}/> :
+            <div style={{width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+              <div style={{margin: "auto", textAlign: "center"}}>
+                <h2>Horray!</h2>
+                <h4>Nici o oră las care trebuie mers</h4>
+              </div>
+            </div>
+          : <>
             <h4 style={{textAlign: 'center', marginBottom: "1em"}}>Nu există date pentru orar</h4>
             <h4 style={{textAlign: 'center'}}>Pentru a vizualiza orarul, apasă
               <IonButton routerLink="/orar-settings">Configurează</IonButton>

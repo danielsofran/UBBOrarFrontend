@@ -8,6 +8,7 @@ const initialState = {
   colorSeminar: 'warning',
   colorLaborator: 'success',
   colorPersonal: 'quaternary',
+  colorMarker: 'primary',
 } as Preferences
 
 export const preferencesSlice = createSlice({

@@ -61,6 +61,11 @@ export const Preferences = () => {
           color={preferences.colorLaborator}
           onChange={(color) => setPreference('colorLaborator', color)}
         />
+        <ColorPicker
+          label="Culoare Indicator"
+          color={preferences.colorMarker}
+          onChange={(color) => setPreference('colorMarker', color)}
+        />
       </IonList>
     </IonContent>
   )

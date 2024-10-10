@@ -5,4 +5,5 @@ export interface Preferences {
   colorSeminar: string
   colorLaborator: string
   colorPersonal: string
+  colorMarker: string
 }
