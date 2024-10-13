@@ -1,5 +1,5 @@
 import {Ora, OrarGrupa} from "../model/orar"
-import {IonAccordion, IonAccordionGroup, IonCheckbox, IonItem, IonLabel, IonList} from "@ionic/react"
+import {IonAccordion, IonAccordionGroup, IonButton, IonCheckbox, IonItem, IonLabel, IonList} from "@ionic/react"
 import {getMaterieCheckedState, getMaterii, setMaterieHidden as setMaterieHiddenModel, setOraHidden as setOraHiddenModel, MaterieHiddenState} from "../service/orarUtils"
 import {useEffect, useRef, useState} from "react"
 import {getSaptamanaFormat, getTimeFormat} from "../service/utils"
@@ -8,9 +8,12 @@ interface ListaMateriiProps {
   orar: OrarGrupa
   setOrar: (orar: OrarGrupa) => void
   grupa?: string
+  onRemove?: () => void
+  style?: any
+  closed?: boolean
 }
 
-export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}) => {
+export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa, onRemove, style, closed}) => {
   const materii = getMaterii(orar)
 
   const parentAccordion = useRef()
@@ -21,7 +24,8 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}
     if(!parentAccordion.current)
       return
     // @ts-ignore
-    parentAccordion.current.value = 'list'
+    if(!closed) parentAccordion.current.value = 'list'
+    else parentAccordion.current.value = null
   }, [])
 
   const setMaterieHidden = (materie: string, checked: boolean) => {
@@ -56,10 +60,11 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}
   }
 
   return (
-    <IonAccordionGroup ref={parentAccordion} onIonChange={onParentAccordionChange}>
+    <IonAccordionGroup ref={parentAccordion} onIonChange={onParentAccordionChange} style={style}>
       <IonAccordion value="list">
         <IonItem slot="header">
           <IonLabel>Lista materii: {grupa}</IonLabel>
+          {onRemove && <IonButton style={{marginRight: 10}} color="danger" slot="end" onClick={onRemove}>Șterge</IonButton>}
         </IonItem>
         <IonList slot="content">
           {materii.map((materie, index) => (
@@ -89,7 +94,7 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa}
                           checked={!ora.hidden}
                           onIonChange={(e) => setOraHidden(ora, e.detail.checked)}
                         />
-                        <IonLabel>{ora.tip} {getTimeFormat(ora)} {getSaptamanaFormat(ora)} {ora.formatie}</IonLabel>
+                        <IonLabel>{ora.tip} {ora.ziua} {getTimeFormat(ora)} {getSaptamanaFormat(ora)} {ora.formatie}</IonLabel>
                       </IonItem>
                     ))}
                   </IonList>

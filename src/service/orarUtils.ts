@@ -37,7 +37,8 @@ export const getMaterieCheckedState = (orar: OrarGrupa, materie: string) => {
 }
 
 export const getOrarOreFacultate = (orar: Orar): Ora[] => {
-  const ore = orar.mainOrar.ore
+  const ore = [...orar.mainOrar.ore]
+  console.log(orar.orareSuplimentare)
   for (const orarSuplimentar of orar.orareSuplimentare)
     ore.push(...orarSuplimentar.ore)
   return ore
@@ -60,6 +61,10 @@ export const getDateStart = (ora: BaseOra): Date => {
   return date
 }
 
+export const getOrarSuplimetarIndex = (orar: Orar, grupa: string): number => {
+  return orar.orareSuplimentare.findIndex(item => item.source.grupa === grupa)
+}
+
 // setters
 
 export const setAn = (orar: Orar, an: string) => {
@@ -78,6 +83,10 @@ export const setOrar = (orar: Orar, orarGrupa: OrarGrupa, lastUpdate?: Date): Or
   return {...orar, mainOrar: orarGrupa, lastUpdate}
 }
 
+export const addOrarSuplimentar = (orar: Orar, orarGrupa: OrarGrupa) => {
+  return {...orar, orareSuplimentare: [...orar.orareSuplimentare, orarGrupa]}
+}
+
 export const setMaterieHidden = (orarGrupa: OrarGrupa, materie: string, hidden: boolean) => {
   const ore = orarGrupa.ore.map(ora => ora.numeMaterie === materie ? {...ora, hidden} : ora)
   return {...orarGrupa, ore}
@@ -86,6 +95,12 @@ export const setMaterieHidden = (orarGrupa: OrarGrupa, materie: string, hidden: 
 export const setOraHidden = (orarGrupa: OrarGrupa, ora: Ora, hidden: boolean) => {
   const ore = orarGrupa.ore.map(item => ora === item ? {...item, hidden} : item)
   return {...orarGrupa, ore}
+}
+
+export const setOrarSuplimentar = (orar: Orar, orarGrupa: OrarGrupa, index: number) => {
+  const orareSuplimentare = [...orar.orareSuplimentare]
+  orareSuplimentare[index] = orarGrupa
+  return {...orar, orareSuplimentare}
 }
 
 // props
@@ -130,6 +145,10 @@ export const orarFirstLastHourInDay = (ore: BaseOra[]): DateInterval | undefined
 
 export const oraStartsBefore = (ora: BaseOra, hour: number, minute: number = 0): boolean => {
   return parseInt(ora.hourStart) < hour || (parseInt(ora.hourStart) === hour && parseInt(ora.minuteStart) < minute)
+}
+
+export const allOreHidden = (orarGrupa: OrarGrupa): boolean => {
+  return orarGrupa.ore.every(ora => ora.hidden)
 }
 
 

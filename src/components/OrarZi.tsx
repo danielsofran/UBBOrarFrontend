@@ -90,8 +90,10 @@ export const OrarZi = (props: OrarZiProps) => {
                   display: 'flex',
                   flexDirection: 'row',
                   gap: orarPadding,
+                  flexWrap: 'nowrap',
+                  overflowX: 'auto',
                 }}>
-                  {ore.map((ora, index) => ( // TODO: use swipe js
+                  {ore.map((ora, index) => (
                       <OraCell ora={ora} compact={ore.length > 1 || getOraDuration(ora) < 2} key={index} />
                     ))
                   }

@@ -5,7 +5,7 @@ export interface ParseResult {
   lastUpdate: Date
 }
 
-export const parseOrarHtml = (html: string, source: Source): ParseResult => {
+export const parseOrarHtml = (html: string, source: Source, defaultOraHidden: boolean): ParseResult => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
   const table = doc.querySelector('tbody')
@@ -32,7 +32,7 @@ export const parseOrarHtml = (html: string, source: Source): ParseResult => {
       sala: cells[5].textContent,
       profesor: cells[6].textContent,
       formatie: cells[7].textContent,
-      hidden: false
+      hidden: defaultOraHidden
     } as Ora
     return rez
   })
@@ -42,7 +42,10 @@ export const parseOrarHtml = (html: string, source: Source): ParseResult => {
     throw new Error('Invalid HTML')
   if(!lastUpdateText[1])
     throw new Error('Invalid HTML')
-  const lastUpdate = new Date(lastUpdateText[1])
+  const lastUpdate = new Date()
+  lastUpdate.setDate(parseInt(lastUpdateText[1].split('.')[0]))
+  lastUpdate.setMonth(parseInt(lastUpdateText[1].split('.')[1]))
+  lastUpdate.setFullYear(parseInt(lastUpdateText[1].split('.')[2]))
   return {
     orar: {
       ore,

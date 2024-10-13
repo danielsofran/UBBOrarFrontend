@@ -71,6 +71,8 @@ export const convertFromDateInterval = (date: Date) => {
 export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string, filterSemigrupa = true) => {
   //console.log(ore)
   return ore.filter(ora => {
+    if(ora.hidden)
+      return false
     if(ora.ziua !== filterData.ziua)
       return false
     if(filterData.saptamana === " " || ora.saptamana === " "){}

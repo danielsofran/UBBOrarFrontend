@@ -5,11 +5,12 @@ import {IonButton, IonContent, IonIcon, IonInput, IonLabel, IonSelect, IonSelect
 import {download, refresh} from "ionicons/icons"
 import {fetchOrar} from "../service/scrapper"
 import {saveOrarDataToStorage} from "../storage/orarData"
-import {equalsOrar, equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru} from "../service/orarUtils"
+import {allOreHidden, equalsOra, equalsOrar, equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru} from "../service/orarUtils"
 import {ListaMaterii} from "../components/ListaMaterii"
-import {Orar} from "../model/orar"
+import {Ora, Orar} from "../model/orar"
 import {SaveCancelButtons} from "../components/core/SaveCancelButtons"
 import {setCurrentTab} from "../reducers/navigation"
+import {ListaMateriiAlteGrupe} from "../components/ListaMateriiAlteGrupe"
 
 export const OrarSettings = () => {
   const dispatch = useAppDispatch()
@@ -54,6 +55,29 @@ export const OrarSettings = () => {
     else {
       setFieldErrors(fieldErrors.filter((error) => error !== 'grupa'))
     }
+  }
+
+  const setAndValidateOrareSuplimentare = (orar: Orar) => {
+    // find duplicates in orar.mainOrar and orar.orareSuplimentare
+    orar = {...orar}
+    orar.orareSuplimentare = [...orar.orareSuplimentare]
+    for(let i = 0; i < orar.orareSuplimentare.length; i++) {
+      // remove if all ore are hidden
+      if(allOreHidden(orar.orareSuplimentare[i])) {
+        orar.orareSuplimentare.splice(i, 1)
+        i--; continue
+      }
+      // check for every ora in orarSuplimentar if it exists in orar.mainOrar. If it does, remove it - curs is already in main orar
+      orar.orareSuplimentare[i] = {...orar.orareSuplimentare[i], ore: [...orar.orareSuplimentare[i].ore]}
+      for(let j = 0; j < orar.orareSuplimentare[i].ore.length; j++) {
+        const ora = orar.orareSuplimentare[i].ore[j]
+        if(orar.mainOrar.ore.find((mainOra) => equalsOra(mainOra, ora))) {
+          orar.orareSuplimentare[i].ore.splice(j, 1)
+          j--; continue
+        }
+      }
+    }
+    setOrar(orar)
   }
 
   const refreshOrar = () => {
@@ -149,18 +173,10 @@ export const OrarSettings = () => {
       />
       {orarExists(orar) && equalsOrarSource(orar, initialOrar) &&
         <>
-          <h3 style={{marginTop: "1em"}}>Setari suplimentare</h3>
-          {/*<IonSelect*/}
-          {/*  label="Semigrupa"*/}
-          {/*  labelPlacement="floating"*/}
-          {/*  value={orar.semigrupa}*/}
-          {/*  onIonInput={(e) => setOrar({...orar, semigrupa: e.detail.value})}*/}
-          {/*>*/}
-          {/*  <IonSelectOption value={null}>Ambele</IonSelectOption>*/}
-          {/*  <IonSelectOption value="1">1</IonSelectOption>*/}
-          {/*  <IonSelectOption value="2">2</IonSelectOption>*/}
-          {/*</IonSelect>*/}
+          <h3 style={{marginTop: "1em"}}>Lista materiilor</h3>
           <ListaMaterii orar={orar.mainOrar} grupa={initialOrar.mainOrar.source.grupa} setOrar={(orarGrupa) => setOrar(setOrarModel(orar, orarGrupa))} />
+          <h3 style={{marginTop: "1em"}}>Ore de la alte grupe</h3>
+          <ListaMateriiAlteGrupe orar={orar} setOrar={setAndValidateOrareSuplimentare} />
           <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: '0.5em'}}>
             {!equalsOrar(orar, initialOrar) && <SaveCancelButtons onSave={saveOrar} onCancel={() => setOrar(initialOrar)}/>}
           </div>

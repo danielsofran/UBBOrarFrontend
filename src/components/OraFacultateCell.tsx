@@ -14,7 +14,7 @@ const cellFontSize = '1.1em'
 
 export const OraFacultateCell = (props: OraFacultateCellProps) => {
   const preferences = useAppSelector(preferencesSelector)
-  const {numeMaterie, tip, sala, profesor} = props.ora
+  const {numeMaterie, tip, sala, profesor, formatie} = props.ora
   const oraStart = `${props.ora.hourStart}:${props.ora.minuteStart}`
   const oraEnd = `${props.ora.hourEnd}:${props.ora.minuteEnd}`
   const profName = profesor.split(" ").splice(1).reduce((acc, word) => acc + word + ' ', '')
@@ -76,6 +76,7 @@ export const OraFacultateCell = (props: OraFacultateCellProps) => {
           }}>{profName}</IonText>
           <IonText style={{...oraStyle, top: cellPadding,}}>{oraStart}</IonText>
           <IonText style={{...oraStyle, bottom: cellPadding,}}>{oraEnd}</IonText>
+          <IonText style={{position: 'absolute', top: cellPadding, left: cellPadding * 2}}>{formatie}</IonText>
         </div>
       }
     </div>
