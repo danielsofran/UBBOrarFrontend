@@ -37,15 +37,15 @@ export const OrarDayView: React.FC = () => {
 
   return (
     <IonContent>
-      <div style={{marginRight: '10px', ...screenProps}}>
+      <div style={{marginRight: 10, ...screenProps}}>
         {orarSourceExists(orarData) ?
           ore.length > 0 ?
-            <>
-              <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} />
+            <div>
+              <div style={{marginLeft: 10}}><WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} /></div>
               <OrarZi ore={ore}/>
-            </> :
+            </div> :
             <div style={{display: 'flex', flexDirection: "column", height: "100%"}}>
-              <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} />
+              <div style={{marginLeft: 10, marginRight: 10}}><WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} /></div>
               <div style={{flexGrow: 1, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <div style={{margin: "auto", textAlign: "center"}}>
                   <h2>Horray!</h2>

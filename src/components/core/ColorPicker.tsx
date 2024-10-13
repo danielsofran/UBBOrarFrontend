@@ -48,8 +48,8 @@ export const ColorPicker = ({label, color, onChange}: ColorPickerProps) => {
         <div
           slot="end"
           style={{
-            width: '20px',
-            height: '20px',
+            width: '1.5em',
+            height: '1.5em',
             backgroundColor: `var(--ion-color-${color})`,
             borderRadius: '50%',
           }}

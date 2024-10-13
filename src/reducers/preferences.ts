@@ -2,8 +2,8 @@ import {Preferences} from "../model/preferences"
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState} from "../store"
 
-const initialState = {
-  darkMode: false,
+export const initialPreferences = {
+  darkMode: true,
   colorCurs: 'danger',
   colorSeminar: 'warning',
   colorLaborator: 'success',
@@ -13,7 +13,7 @@ const initialState = {
 
 export const preferencesSlice = createSlice({
   name: "preferences",
-  initialState,
+  initialState: initialPreferences,
   reducers: {
     setPreferences: (state, action: PayloadAction<Preferences>) => {
       if(!action.payload)

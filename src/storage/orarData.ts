@@ -4,7 +4,7 @@ import {Orar} from "../model/orar"
 export const getOrarDataFromStorage = async (): Promise<Orar> => {
   return await Preferences.get({ key: 'orarData' }).then(data => {
     if (!data.value)
-      return null
+      throw new Error('Orar data not found')
     let orarData = JSON.parse(data.value)
     orarData = {...orarData, lastUpdate: new Date(orarData.lastUpdate)}
     return orarData

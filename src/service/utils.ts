@@ -68,17 +68,11 @@ export const convertFromDateInterval = (date: Date) => {
   }
 }
 
-export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string) => {
+export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string, filterSemigrupa = true) => {
   //console.log(ore)
   return ore.filter(ora => {
     if(ora.ziua !== filterData.ziua)
       return false
-    // @ts-ignore
-    if(ora.numeMaterie.startsWith("Instrumente"))
-    {
-      console.log(filterData.saptamana, ora.saptamana, filterData.saptamana === ora.saptamana)
-      //debugger
-    }
     if(filterData.saptamana === " " || ora.saptamana === " "){}
     else if(ora.saptamana !== filterData.saptamana)
       return false
@@ -89,7 +83,7 @@ export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: stri
     if(filterData.tip === " "){}
     else if(oraF.tip !== filterData.tip)
       return false
-    if(filterData.semigrupa === " ") // TODO: FIX THIS
+    if(!filterSemigrupa || filterData.semigrupa === " ")
       return true
     if(oraF.formatie.startsWith(grupa) && !oraF.formatie.endsWith("/"+filterData.semigrupa)) // grupa/semigrupa
       return false

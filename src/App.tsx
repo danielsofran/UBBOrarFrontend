@@ -9,7 +9,7 @@ import {
   setupIonicReact
 } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
-import { Route } from 'react-router-dom'
+import {Redirect, Route} from "react-router-dom"
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -50,7 +50,7 @@ import {useEffect} from "react"
 import {getOrarDataFromStorage} from "./storage/orarData"
 import {Preferences} from "./pages/Preferences"
 import {useDarkMode} from "./hooks/useDarkMode"
-import {setPreferences} from "./reducers/preferences"
+import {initialPreferences, setPreferences} from "./reducers/preferences"
 import {getPreferencesFromStorage} from "./storage/preferences"
 import {getFilterDataFromStorage} from "./storage/filterData"
 import {setFilterData} from "./reducers/filter"
@@ -72,7 +72,7 @@ const App: React.FC = () => {
     }).catch((err) => {
       console.error("Error fetching preferences", err)
       // @ts-ignore
-      dispatch(setPreferences({darkMode: isDarkMode}))
+      dispatch(setPreferences(initialPreferences))
     })
 
     // load filter data from storage
@@ -100,7 +100,7 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonRouterOutlet>
           <Layout>
-            <Route exact path="/" component={OrarDayView} />
+            <Route exact path="/" render={() => <Redirect to="/orar" />} />
             <Route exact path="/orar" component={OrarDayView} />
             <Route exact path="/orar-settings" component={OrarSettings} />
             <Route exact path="/preferences" component={Preferences} />

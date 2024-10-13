@@ -4,7 +4,7 @@ import {Preferences as PreferencesModel} from "../model/preferences"
 export const getPreferencesFromStorage = async (): Promise<PreferencesModel> => {
   return await Preferences.get({ key: 'preferences' }).then(data => {
     if (!data.value)
-      return null
+      throw new Error('Preferences not found')
     return JSON.parse(data.value)
   })
 }
