@@ -9,7 +9,8 @@ const initialState = {
     source: {an: getAcademicYear(), semestru: getSemester(), grupa: ""},
   } as OrarGrupa,
   orareSuplimentare: [],
-  orePersonale: []
+  orePersonale: [],
+  lastUpdate: new Date()
 } as Orar
 
 export const orarDataSlice = createSlice({
@@ -19,7 +20,10 @@ export const orarDataSlice = createSlice({
     setOrarData: (state, action: PayloadAction<Orar>) => {
       if(!action.payload)
         return
-      return action.payload
+      state.mainOrar = action.payload.mainOrar ?? state.mainOrar
+      state.orareSuplimentare = action.payload.orareSuplimentare ?? state.orareSuplimentare
+      state.orePersonale = action.payload.orePersonale ?? state.orePersonale
+      state.lastUpdate = action.payload.lastUpdate ?? state.lastUpdate
     }
   }
 })

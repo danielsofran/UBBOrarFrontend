@@ -18,14 +18,14 @@ export const OrarDayView: React.FC = () => {
 
   useEffect(() => {
     const ore = getOrarOre(orarData)
-    setOre(applyFilters(ore, filterData, orarData.mainOrar.source.grupa))
+    setOre(applyFilters(ore, filterData))
     //@ts-ignore
     dispatch(setCurrentTab({title: 'Orar', filterMenu: FilterMenu.ORAR_ZI}))
   }, [])
 
   useEffect(() => {
     const ore = getOrarOre(orarData)
-    setOre(applyFilters(ore, filterData, orarData.mainOrar.source.grupa))
+    setOre(applyFilters(ore, filterData))
   }, [filterData, orarData])
 
   const setZiua = (date: Date) => {
@@ -35,24 +35,34 @@ export const OrarDayView: React.FC = () => {
 
   const screenProps = ore.length <= 0 ? {width: "100%", height: "100%"} : {}
 
+  const Picker = ({haveRight}) => {
+    return (
+      <div style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        paddingLeft: 10,
+        paddingRight: haveRight ? 10 : 0,
+        paddingBottom: 10,
+        backgroundColor: "var(--ion-color-light)"
+      }}>
+        <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua}/>
+      </div>
+    )
+  }
+
   return (
     <IonContent>
       <div style={{marginRight: 10, ...screenProps}}>
         {orarSourceExists(orarData) ? (
           ore.length > 0 ? (
             <div>
-              {/* WeekDayPicker always stays at the top */}
-              <div style={{position: 'sticky', top: 0, zIndex: 10, marginLeft: 10,}}>
-                <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua}/>
-              </div>
+              <Picker haveRight={false}/>
               <OrarZi ore={ore}/>
             </div>
           ) : (
             <div style={{display: 'flex', flexDirection: "column", height: "100%"}}>
-              {/* WeekDayPicker always stays at the top */}
-              <div style={{position: 'sticky', top: 0, zIndex: 10, marginLeft: 10, marginRight: 10,}}>
-                <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua}/>
-              </div>
+              <Picker haveRight={true}/>
               <div style={{flexGrow: 1, height: "90%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <div style={{margin: "auto", textAlign: "center"}}>
                   <h2>Horray!</h2>

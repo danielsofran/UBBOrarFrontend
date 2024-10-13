@@ -38,7 +38,6 @@ export const getMaterieCheckedState = (orar: OrarGrupa, materie: string) => {
 
 export const getOrarOreFacultate = (orar: Orar): Ora[] => {
   const ore = [...orar.mainOrar.ore]
-  console.log(orar.orareSuplimentare)
   for (const orarSuplimentar of orar.orareSuplimentare)
     ore.push(...orarSuplimentar.ore)
   return ore
@@ -49,6 +48,18 @@ export const getOrarOre = (orar: Orar): BaseOra[] => {
   for (const oraPersonal of orar.orePersonale)
     ore.push(oraPersonal)
   return ore
+}
+
+export const getOrarOreSplit = (orar: Orar) => {
+  const oreGrupa = []
+  for(const ora of orar.mainOrar.ore)
+    oreGrupa.push(ora)
+  const oreAlteGrupe = []
+  for(const orarSuplimentar of orar.orareSuplimentare)
+    for(const ora of orarSuplimentar.ore)
+      oreAlteGrupe.push(ora)
+  const orePersonale = [...orar.orePersonale]
+  return {oreGrupa, oreAlteGrupe, orePersonale}
 }
 
 export const getOraType = (ora: BaseOra): OraType => {

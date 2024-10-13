@@ -2,10 +2,30 @@ import {IonItem, IonLabel, IonList, IonSelect, IonSelectOption} from "@ionic/rea
 import {useAppDispatch, useAppSelector} from "../store"
 import {filterDataSelector, setFilterData as setFilterDataRedux} from "../reducers/filter"
 import {saveFilterDataToStorage} from "../storage/filterData"
+import {orarDataSelector} from "../reducers/orarData"
+import {useMemo} from "react"
 
 export const FilterOrarDay: React.FC = () => {
   const dispatch = useAppDispatch()
+  const orar = useAppSelector(orarDataSelector)
   const filterDataRedux = useAppSelector(filterDataSelector)
+
+  const formatii = useMemo(() => {
+    if(!orar)
+      return []
+    const rez = orar.mainOrar.ore.reduce((acc, ora) => {
+      if(ora.formatie.match(/\/[12]$/) && !acc.includes(ora.formatie))
+        acc.push(ora.formatie)
+      return acc
+    }, [])
+    orar.orareSuplimentare.forEach(orarSuplimentar =>
+      orarSuplimentar.ore.forEach(ora => {
+        if(ora.formatie.match(/\/[12]$/) && !rez.includes(ora.formatie))
+          rez.push(ora.formatie)
+      })
+    )
+    return rez.sort()
+  }, [orar])
 
   const setProperty = (property: string, value: any) => {
     const newFilterData = {...filterDataRedux, [property]: value}
@@ -39,19 +59,21 @@ export const FilterOrarDay: React.FC = () => {
           value={filterDataRedux.saptamana}
           onIonChange={e => setProperty('saptamana', e.detail.value)}
         >
-          <IonSelectOption value="1">Impara</IonSelectOption>
-          <IonSelectOption value="2">Para</IonSelectOption>
+          <IonSelectOption value="1">1</IonSelectOption>
+          <IonSelectOption value="2">2</IonSelectOption>
         </IonSelect>
       </IonItem>
       <IonItem>
-        <IonLabel>Semigrupa</IonLabel>
-        <IonSelect interface="popover"
-          value={filterDataRedux.semigrupa}
-          onIonChange={e => setProperty('semigrupa', e.detail.value)}
+        <IonLabel>Semigrupe</IonLabel>
+        <IonSelect
+          interface="popover"
+          multiple={true}
+          value={filterDataRedux.formatii}
+          onIonChange={e => setProperty('formatii', e.detail.value)}
         >
-          <IonSelectOption value=" ">Toate</IonSelectOption>
-          <IonSelectOption value="1">1</IonSelectOption>
-          <IonSelectOption value="2">2</IonSelectOption>
+          {formatii.map((formatie, index) => (
+            <IonSelectOption key={index} value={formatie}>{formatie}</IonSelectOption>
+          ))}
         </IonSelect>
       </IonItem>
       <IonItem>

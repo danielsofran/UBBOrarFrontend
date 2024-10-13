@@ -4,7 +4,7 @@ import {dateToZiua} from "../service/utils"
 export interface FilterData {
   ziua: Ziua
   saptamana: "1" | "2" | " "
-  semigrupa: "1" | "2" | " "
+  formatii: []
   tip: Tip | " "
   // metadata
   lastSaptamanaCaptured: Date
@@ -15,7 +15,7 @@ export const defaultFilterData: FilterData = {
   saptamana: "1",
   lastSaptamanaCaptured: new Date(),
   tip: " ",
-  semigrupa: " "
+  formatii: []
 }
 
 export const updateData = (filterData: FilterData) => {

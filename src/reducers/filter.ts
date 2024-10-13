@@ -17,13 +17,11 @@ const filterSlice = createSlice({
         return
       state.filterData.tip = action.payload.tip ?? state.filterData.tip
       state.filterData.saptamana = action.payload.saptamana ?? state.filterData.saptamana
-      state.filterData.semigrupa = action.payload.semigrupa ?? state.filterData.semigrupa
+      state.filterData.formatii = action.payload.formatii ?? state.filterData.formatii
       state.filterData.ziua = action.payload.ziua ?? state.filterData.ziua
       state.filterData.lastSaptamanaCaptured = action.payload.lastSaptamanaCaptured ?? state.filterData.lastSaptamanaCaptured
     },
     setFilterDay: (state, action: PayloadAction<Date>) => {
-      // if(!action.payload)
-      //   return
       const ziua = dateToZiua(action.payload)
       state.filterData.ziua = ziua
     }

@@ -68,8 +68,7 @@ export const convertFromDateInterval = (date: Date) => {
   }
 }
 
-export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: string, filterSemigrupa = true) => {
-  //console.log(ore)
+export const applyFilters = (ore: BaseOra[], filterData: FilterData) => {
   return ore.filter(ora => {
     if(ora.hidden)
       return false
@@ -85,9 +84,11 @@ export const applyFilters = (ore: BaseOra[], filterData: FilterData, grupa: stri
     if(filterData.tip === " "){}
     else if(oraF.tip !== filterData.tip)
       return false
-    if(!filterSemigrupa || filterData.semigrupa === " ")
+    if(filterData.formatii.length === 0)
       return true
-    if(oraF.formatie.startsWith(grupa) && !oraF.formatie.endsWith("/"+filterData.semigrupa)) // grupa/semigrupa
+    if(!oraF.formatie.includes("/"))
+      return true // nu are semigrupa
+    if(!filterData.formatii.includes(oraF.formatie as never))
       return false
     return true
   })
