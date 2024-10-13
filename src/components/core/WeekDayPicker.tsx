@@ -31,7 +31,7 @@ export const WeekDayPicker = (props: WeekDayPickerProps) => {
             key={index}
             onClick={() => props.onDatePicked(date)}
             style={{
-              marginRight: 0, marginLeft: 0,
+              margin: 0, marginTop: 10,
               width: "20vw",
               minWidth: "70px",
               textAlign: "center",

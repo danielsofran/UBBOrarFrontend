@@ -6,4 +6,5 @@ export interface Preferences {
   colorLaborator: string
   colorPersonal: string
   colorMarker: string
+  oneHourHeight: number
 }

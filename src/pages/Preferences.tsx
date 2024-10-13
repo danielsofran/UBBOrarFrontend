@@ -2,7 +2,7 @@ import {useAppDispatch, useAppSelector} from "../store"
 import {preferencesSelector, setPreferences} from "../reducers/preferences"
 import {useEffect, useState} from "react"
 import {setCurrentTab} from "../reducers/navigation"
-import {IonContent, IonItem, IonList, IonListHeader, IonToggle} from "@ionic/react"
+import {IonContent, IonItem, IonLabel, IonList, IonListHeader, IonRange, IonToggle} from "@ionic/react"
 import {useDarkMode} from "../hooks/useDarkMode"
 import {savePreferencesToStorage} from "../storage/preferences"
 import {ColorPicker} from "../components/core/ColorPicker";
@@ -35,7 +35,7 @@ export const Preferences = () => {
 
   return (
     <IonContent className="ion-padding">
-      <IonListHeader style={{ fontSize: '1.2em' }}> Aspect </IonListHeader>
+      <IonListHeader style={{ fontSize: '1.5em' }}> Aspect </IonListHeader>
       <IonList inset>
         <IonItem>
           <IonToggle
@@ -66,6 +66,21 @@ export const Preferences = () => {
           color={preferences.colorMarker}
           onChange={(color) => setPreference('colorMarker', color)}
         />
+      </IonList>
+      <IonListHeader style={{ fontSize: '1.5em' }}> Dimensiuni </IonListHeader>
+      <IonList inset>
+        <IonItem>
+          <IonRange
+            label="Ora"
+            min={4} max={15} step={1} snaps={true} pin={true}
+            pinFormatter={(value) => `h/${value}`}
+            value={preferences.oneHourHeight}
+            onIonChange={(e) => setPreference('oneHourHeight', e.detail.value as number)}
+          >
+            <IonLabel slot="start">Mare</IonLabel>
+            <IonLabel slot="end">Mic</IonLabel>
+          </IonRange>
+        </IonItem>
       </IonList>
     </IonContent>
   )

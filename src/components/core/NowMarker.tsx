@@ -1,4 +1,4 @@
-import {oneHourHeight, orarPadding} from "../OrarZi"
+import {orarPadding} from "../OrarZi"
 import {useEffect, useState} from "react"
 import {getHourFloat} from "../../service/utils"
 import {useAppSelector} from "../../store"
@@ -10,6 +10,7 @@ interface NowMarkerProps {
 
 export const NowMarker = (props: NowMarkerProps) => {
   const preferences = useAppSelector(preferencesSelector)
+  const oneHourHeight = window.innerHeight / preferences.oneHourHeight
   const [realNowHour, setRealNowHour] = useState<number>(getHourFloat(new Date()))
 
   const firstHour = props.breakpoints[0], lastHour = props.breakpoints[props.breakpoints.length - 1]
@@ -36,20 +37,20 @@ export const NowMarker = (props: NowMarkerProps) => {
         top: `${(nowHour - firstHour) * oneHourHeight + nrPaddings * orarPadding}px`,
         left: 0,
         width: '100%',
-        height: '5px',
+        height: 5,
         backgroundColor: `var(--ion-color-${preferences.colorMarker}`,
         zIndex: 5,
         transition: 'top 0.5s ease',
       }}>
         <span style={{
           position: 'absolute',
-          top: '-7px',
-          left: '-20px',
-          width: '20px',
-          height: '20px',
+          top: -7,
+          left: -20,
+          width: 20,
+          height: 20,
           borderRadius: '50%',
           backgroundColor: `var(--ion-color-${preferences.colorMarker}`,
-          content: '',
+          content: '*',
           transition: 'top 0.5s ease, left 0.5s ease',
         }}></span>
       </div>

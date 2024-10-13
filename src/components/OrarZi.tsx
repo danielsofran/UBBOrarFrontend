@@ -5,15 +5,20 @@ import {createHoursBlocks, getOraDuration, orarClashes} from "../service/orarGri
 import {IonCol, IonContent, IonGrid, IonRow, IonText} from "@ionic/react"
 import {NowMarker} from "./core/NowMarker"
 import {OraCell} from "./OraCell"
+import {useAppSelector} from "../store"
+import {preferencesSelector} from "../reducers/preferences"
 
 interface OrarZiProps {
   ore: BaseOra[]
 }
 
-export const oneHourHeight = window.innerHeight / 11
+// export const oneHourHeight = window.innerHeight / 11
 export const orarPadding = 20
 
 export const OrarZi = (props: OrarZiProps) => {
+  const preferences = useAppSelector(preferencesSelector)
+  const oneHourHeight = window.innerHeight / preferences.oneHourHeight
+
   const dateLimit = orarFirstLastHourInDay(props.ore)
   if(!dateLimit) return null
   const hoursBlocks = createHoursBlocks(dateLimit)

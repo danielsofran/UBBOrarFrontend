@@ -38,28 +38,38 @@ export const OrarDayView: React.FC = () => {
   return (
     <IonContent>
       <div style={{marginRight: 10, ...screenProps}}>
-        {orarSourceExists(orarData) ?
-          ore.length > 0 ?
+        {orarSourceExists(orarData) ? (
+          ore.length > 0 ? (
             <div>
-              <div style={{marginLeft: 10}}><WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} /></div>
+              {/* WeekDayPicker always stays at the top */}
+              <div style={{position: 'sticky', top: 0, zIndex: 10, marginLeft: 10,}}>
+                <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua}/>
+              </div>
               <OrarZi ore={ore}/>
-            </div> :
+            </div>
+          ) : (
             <div style={{display: 'flex', flexDirection: "column", height: "100%"}}>
-              <div style={{marginLeft: 10, marginRight: 10}}><WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} /></div>
-              <div style={{flexGrow: 1, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+              {/* WeekDayPicker always stays at the top */}
+              <div style={{position: 'sticky', top: 0, zIndex: 10, marginLeft: 10, marginRight: 10,}}>
+                <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua}/>
+              </div>
+              <div style={{flexGrow: 1, height: "90%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <div style={{margin: "auto", textAlign: "center"}}>
                   <h2>Horray!</h2>
-                  <h4>Nici o oră las care trebuie mers</h4>
+                  <h4>Nici o oră la care trebuie mers</h4>
                 </div>
               </div>
             </div>
-          : <>
+          )
+        ) : (
+          <>
             <h4 style={{textAlign: 'center', marginBottom: "1em"}}>Nu există date pentru orar</h4>
-            <h4 style={{textAlign: 'center'}}>Pentru a vizualiza orarul, apasă
+            <h4 style={{textAlign: 'center'}}>
+              Pentru a vizualiza orarul, apasă
               <IonButton routerLink="/orar-settings">Configurează</IonButton>
             </h4>
           </>
-        }
+        )}
       </div>
     </IonContent>
   )
