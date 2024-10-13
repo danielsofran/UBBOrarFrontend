@@ -1,6 +1,8 @@
 import {defaultFilterData, FilterData} from "../model/filter"
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState} from "../store"
+import {dateToZiua, ziuaToDayOfWeek} from "../service/utils"
+import {Ziua} from "../model/orar"
 
 const initialState = {
   filterData: defaultFilterData,
@@ -18,10 +20,21 @@ const filterSlice = createSlice({
       state.filterData.semigrupa = action.payload.semigrupa ?? state.filterData.semigrupa
       state.filterData.ziua = action.payload.ziua ?? state.filterData.ziua
       state.filterData.lastSaptamanaCaptured = action.payload.lastSaptamanaCaptured ?? state.filterData.lastSaptamanaCaptured
+    },
+    setFilterDay: (state, action: PayloadAction<Date>) => {
+      // if(!action.payload)
+      //   return
+      const ziua = dateToZiua(action.payload)
+      state.filterData.ziua = ziua
     }
   }
 })
 
-export const {setFilterData} = filterSlice.actions
+export const {setFilterData, setFilterDay} = filterSlice.actions
 export default filterSlice.reducer
-export const filterDataSelector = (state: RootState): FilterData => state.filter.filterData
+export const filterDataSelector = (state: RootState): FilterData => {
+  const data = state.filter.filterData
+  if(data.ziua === Ziua.SAMBATA || data.ziua === Ziua.DUMINICA)
+    return {...data, ziua: Ziua.LUNI}
+  return data
+}

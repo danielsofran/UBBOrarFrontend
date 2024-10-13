@@ -17,7 +17,7 @@ export const getHourFloatForOra = (ora: BaseOra) => {
   }
 }
 
-const days = ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă']
+export const days = ['Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă']
 export const dateToZiua = (date: Date) => {
   return days[date.getDay()] as Ziua
 }

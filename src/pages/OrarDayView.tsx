@@ -6,8 +6,9 @@ import {setCurrentTab} from "../reducers/navigation"
 import {OrarZi} from "../components/OrarZi"
 import {getOrarOre, orarSourceExists} from "../service/orarUtils"
 import {FilterMenu} from "../model/navigation"
-import {applyFilters} from "../service/utils"
-import {filterDataSelector} from "../reducers/filter"
+import {applyFilters, ziuaToDayOfWeek} from "../service/utils"
+import {filterDataSelector, setFilterData, setFilterDay} from "../reducers/filter"
+import {WeekDayPicker} from "../components/core/WeekDayPicker"
 
 export const OrarDayView: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -27,6 +28,11 @@ export const OrarDayView: React.FC = () => {
     setOre(applyFilters(ore, filterData, orarData.mainOrar.source.grupa))
   }, [filterData, orarData])
 
+  const setZiua = (date: Date) => {
+    // @ts-ignore
+    dispatch(setFilterDay(date))
+  }
+
   const screenProps = ore.length <= 0 ? {width: "100%", height: "100%"} : {}
 
   return (
@@ -34,11 +40,17 @@ export const OrarDayView: React.FC = () => {
       <div style={{marginRight: '10px', ...screenProps}}>
         {orarSourceExists(orarData) ?
           ore.length > 0 ?
-            <OrarZi ore={ore}/> :
-            <div style={{width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-              <div style={{margin: "auto", textAlign: "center"}}>
-                <h2>Horray!</h2>
-                <h4>Nici o oră las care trebuie mers</h4>
+            <>
+              <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} />
+              <OrarZi ore={ore}/>
+            </> :
+            <div style={{display: 'flex', flexDirection: "column", height: "100%"}}>
+              <WeekDayPicker selectedDate={ziuaToDayOfWeek(filterData.ziua)} onDatePicked={setZiua} />
+              <div style={{flexGrow: 1, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+                <div style={{margin: "auto", textAlign: "center"}}>
+                  <h2>Horray!</h2>
+                  <h4>Nici o oră las care trebuie mers</h4>
+                </div>
               </div>
             </div>
           : <>

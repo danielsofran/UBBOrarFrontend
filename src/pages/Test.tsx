@@ -6,6 +6,7 @@ import {setCurrentTab} from "../reducers/navigation"
 import {OrarZi} from "../components/OrarZi"
 import {Ziua} from "../model/orar"
 import {getOrarOre} from "../service/orarUtils"
+import {WeekDayPicker} from "../components/core/WeekDayPicker"
 
 export const Test: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -20,7 +21,8 @@ export const Test: React.FC = () => {
   return (
     <IonContent>
       <div style={{marginRight: '10px'}}>
-      <OrarZi ore={ore}/>
+      {/*<OrarZi ore={ore}/>*/}
+        <WeekDayPicker onDatePicked={(date)=>{}} selectedDate={new Date().getDay()} />
       </div>
     </IonContent>
   )
