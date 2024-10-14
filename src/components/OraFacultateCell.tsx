@@ -40,6 +40,7 @@ export const OraFacultateCell = (props: OraFacultateCellProps) => {
         width: '100%', height: '100%',
         fontSize: cellFontSize,
         backgroundColor: `var(--ion-color-${getColor()})`,
+        opacity: 0.9,
         borderRadius: cellBorderRadius,
         padding: cellPadding,
         zIndex: 6,

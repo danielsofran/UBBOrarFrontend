@@ -32,7 +32,7 @@ export const WeekDayPicker = (props: WeekDayPickerProps) => {
             onClick={() => props.onDatePicked(date)}
             style={{
               margin: 0, marginTop: 10,
-              width: "20vw",
+              width: "calc(20% - 5px)",
               minWidth: "70px",
               textAlign: "center",
               backgroundColor: isSelected ? "var(--ion-color-primary)" : "var(--ion-color-light)",

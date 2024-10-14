@@ -39,8 +39,9 @@ export const OrarDayView: React.FC = () => {
     return (
       <div style={{
         position: 'sticky',
+        width: "100vw",
         top: 0,
-        zIndex: 10,
+        zIndex: 20,
         paddingLeft: 10,
         paddingRight: haveRight ? 10 : 0,
         paddingBottom: 10,
@@ -56,12 +57,12 @@ export const OrarDayView: React.FC = () => {
       <div style={{marginRight: 10, ...screenProps}}>
         {orarSourceExists(orarData) ? (
           ore.length > 0 ? (
-            <div>
+            <div style={{width: "100%"}}>
               <Picker haveRight={false}/>
               <OrarZi ore={ore}/>
             </div>
           ) : (
-            <div style={{display: 'flex', flexDirection: "column", height: "100%"}}>
+            <div style={{display: 'flex', flexDirection: "column", height: "100%", width: "100%"}}>
               <Picker haveRight={true}/>
               <div style={{flexGrow: 1, height: "90%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <div style={{margin: "auto", textAlign: "center"}}>
