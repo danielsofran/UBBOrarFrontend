@@ -7,9 +7,11 @@ import { defineConfig } from 'vite'
 
 const apiBaseUrl = 'https://horatiu-udrea.github.io/cs-ubb-timetable-parser/'
 const staticWebAppUrl = 'https://danielsofran.github.io/UBBOrarFrontend/'
+const basePath = '/UBBOrarFrontend/'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: basePath,
   plugins: [
     react(),
     legacy(),

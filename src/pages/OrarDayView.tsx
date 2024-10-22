@@ -9,6 +9,7 @@ import {FilterMenu} from "../model/navigation"
 import {applyFilters, ziuaToDayOfWeek} from "../service/utils"
 import {filterDataSelector, setFilterData, setFilterDay} from "../reducers/filter"
 import {WeekDayPicker} from "../components/core/WeekDayPicker"
+import {basePath} from "../App"
 
 export const OrarDayView: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -77,7 +78,7 @@ export const OrarDayView: React.FC = () => {
             <h4 style={{textAlign: 'center', marginBottom: "1em"}}>Nu există date pentru orar</h4>
             <h4 style={{textAlign: 'center'}}>
               Pentru a vizualiza orarul, apasă
-              <IonButton routerLink="/orar-settings">Configurează</IonButton>
+              <IonButton routerLink={basePath + "orar-settings"}>Configurează</IonButton>
             </h4>
           </>
         )}
