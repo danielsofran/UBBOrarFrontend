@@ -25,6 +25,7 @@ export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa,
       return
     // @ts-ignore
     if(!closed) parentAccordion.current.value = 'list'
+    // @ts-ignore
     else parentAccordion.current.value = null
   }, [])
 
