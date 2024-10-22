@@ -6,6 +6,7 @@ import {orarDataSelector} from "./reducers/orarData"
 import {orarExists} from "./service/orarUtils"
 import {FilterMenu} from "./model/navigation"
 import {FilterOrarDay} from "./components/FilterOrarDay"
+import {basePath} from "./App"
 
 const MenuEntry = ({title, path, menu = 'left-menu'}: {title: string, path: string, menu?: string}) => (
   <IonMenuToggle autoHide={false} menu={menu}>
@@ -22,15 +23,15 @@ export const Layout = ({children}) => {
       <IonMenu menuId="left-menu" contentId="main-content">
         <IonHeader>
           <IonToolbar>
-            <IonImg slot="start" src="/ubb.png" style={{width: "auto", height: 40, marginLeft: "1em"}} />
+            <IonImg slot="start" src={basePath + "ubb.png"} style={{width: "auto", height: 40, marginLeft: "1em"}} />
             <IonTitle>Orar UBB</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
-            <MenuEntry title="Orar" path="/orar" />
-            <MenuEntry title="Configurează Orar" path="/orar-settings" />
-            <MenuEntry title="Preferințe" path="/preferences" />
+            <MenuEntry title="Orar" path={basePath + "orar"} />
+            <MenuEntry title="Configurează Orar" path={basePath + "orar-settings"} />
+            <MenuEntry title="Preferințe" path={basePath + "preferences"} />
             {/*<MenuEntry title="Test" path="/test" />*/}
           </IonList>
         </IonContent>

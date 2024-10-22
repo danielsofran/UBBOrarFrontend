@@ -100,14 +100,14 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonRouterOutlet>
           <Layout>
-            <Route exact path="/" render={() => <Redirect to="/orar" />} />
-            <Route exact path="/orar" component={OrarDayView} />
-            <Route exact path="/orar-settings" component={OrarSettings} />
-            <Route exact path="/preferences" component={Preferences} />
-            <Route exact path="/test" component={Test} />
+            <Route exact path={basePath} render={() => <Redirect to={basePath + "orar"} />} />
+            <Route exact path={basePath +"orar"} component={OrarDayView} />
+            <Route exact path={basePath +"orar-settings"} component={OrarSettings} />
+            <Route exact path={basePath +"preferences"} component={Preferences} />
+            <Route exact path={basePath +"test"} component={Test} />
 
             {/* Catch-all route to redirect to home */}
-            <Route path="*" render={() => <Redirect to="/orar" />} />
+            <Route path="*" render={() => <Redirect to={basePath + "orar"} />} />
           </Layout>
         </IonRouterOutlet>
       </IonReactRouter>
@@ -116,3 +116,4 @@ const App: React.FC = () => {
 }
 
 export default App
+export const basePath = import.meta.env.BASE_URL
