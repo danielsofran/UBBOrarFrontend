@@ -16,14 +16,13 @@ interface ListaMateriiProps {
 export const ListaMaterii: React.FC<ListaMateriiProps> = ({orar, setOrar, grupa, onRemove, style, closed}) => {
   const materii = getMaterii(orar)
 
-  const parentAccordion = useRef()
+  const parentAccordion = useRef<any>()
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null)
 
   useEffect(() => {
     // close all accordions when the component is mounted
     if(!parentAccordion.current)
       return
-    // @ts-ignore
     if(!closed) parentAccordion.current.value = 'list'
     else parentAccordion.current.value = null
   }, [])
