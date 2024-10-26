@@ -105,6 +105,9 @@ const App: React.FC = () => {
             <Route exact path="/orar-settings" component={OrarSettings} />
             <Route exact path="/preferences" component={Preferences} />
             <Route exact path="/test" component={Test} />
+
+            {/* Catch-all route to redirect to home */}
+            <Route path="*" render={() => <Redirect to="/orar" />} />
           </Layout>
         </IonRouterOutlet>
       </IonReactRouter>
