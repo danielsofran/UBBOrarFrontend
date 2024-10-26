@@ -15,7 +15,6 @@ export default defineConfig({
     legacy(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifestFilename: 'manifest.json',
       workbox: {
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -43,6 +42,46 @@ export default defineConfig({
           }
         ],
       },
+      manifest: { // copy manifest from public/manifest.json
+        "short_name": "UBB Orar",
+        "name": "UBB Orar FMI",
+        "description": "Orarul Facultății de Matematică și Informatică din cadrul Universității Babeș-Bolyai",
+        "icons": [
+          {
+            "src": "/ubb.png",
+            "sizes": "256x256 192x192 128x128 96x96 64x64 48x48 32x32 24x24 16x16",
+            "type": "image/png"
+          },
+          {
+            "src": "/ubb.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable"
+          }
+        ],
+        "screenshots": [
+          {
+            "src": "/ss-desk.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "focus_mode": "center",
+            "form_factor": "wide"
+          },
+          {
+            "src": "/ss-mobile.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "focus_mode": "center",
+            "form_factor": "narrow"
+          }
+        ],
+        "start_url": ".",
+        "display": "standalone",
+        "theme_color": "#ffffff",
+        "background_color": "#ffffff",
+        "orientation": "portrait",
+        "display_override": ["window-controls-overlay", "standalone", "browser"]
+      }
     }),
   ],
   test: {
