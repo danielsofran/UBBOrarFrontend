@@ -1,5 +1,5 @@
 import {formatDatePart} from "./utils"
-import {BaseOra, CustomOra, Ora, Orar, OrarGrupa, OraType, Ziua} from "../model/orar"
+import {BaseOra, CustomOra, Ora, Orar, OrarGrupa, OraType, Source, Ziua} from "../model/orar"
 import {DateInterval} from "./orarGridUtils"
 
 export enum MaterieHiddenState {
@@ -17,6 +17,9 @@ export const getGrupa = (orar: Orar) => orar.mainOrar.source.grupa
 export const getLastUpdateText = (orar: Orar) => {
   if(!orar.lastUpdate)
     return ""
+  // convert to datetime if it's a string
+  if(typeof orar.lastUpdate === "string")
+    orar.lastUpdate = new Date(orar.lastUpdate)
   const day = formatDatePart(orar.lastUpdate.getDate())
   const month = formatDatePart(orar.lastUpdate.getMonth())
   const year = orar.lastUpdate.getFullYear()
@@ -162,6 +165,59 @@ export const allOreHidden = (orarGrupa: OrarGrupa): boolean => {
   return orarGrupa.ore.every(ora => ora.hidden)
 }
 
+export const oraInOrar = (ora: Ora, orar: Orar, equals = equalsOraGrupa): boolean => {
+  return orar.mainOrar.ore.some(oraMain => equals(oraMain, ora)) ||
+    orar.orareSuplimentare.some(orarSuplimentar => orarSuplimentar.ore.some(oraSuplimentar => equals(oraSuplimentar, ora)))
+}
+
+// methods
+
+export const validateOrareSuplimentare = (orarGiven: Orar): Orar => {
+  const orar = {...orarGiven}
+  orar.orareSuplimentare = [...orar.orareSuplimentare]
+  for(let i = 0; i < orar.orareSuplimentare.length; i++) {
+    // remove if all ore are hidden
+    if(allOreHidden(orar.orareSuplimentare[i])) {
+      orar.orareSuplimentare.splice(i, 1)
+      i--; continue
+    }
+    // check for every ora in orarSuplimentar if it exists in orar.mainOrar. If it does, remove it - curs is already in main orar
+    orar.orareSuplimentare[i] = {...orar.orareSuplimentare[i], ore: [...orar.orareSuplimentare[i].ore]}
+    for(let j = 0; j < orar.orareSuplimentare[i].ore.length; j++) {
+      const ora = orar.orareSuplimentare[i].ore[j]
+      if(orar.mainOrar.ore.find((mainOra) => equalsOra(mainOra, ora))) {
+        orar.orareSuplimentare[i].ore.splice(j, 1)
+        j--; continue
+      }
+    }
+  }
+  return orar
+}
+
+export const removeOrarDuplicates = (orarGrupa: OrarGrupa, orar: Orar): OrarGrupa => {
+  const ore = orarGrupa.ore.filter(ora => !oraInOrar(ora, orar))
+  return {...orarGrupa, ore}
+}
+
+export const removeGrupaIndexFromOrar = (orar: Orar, index: number): Orar => {
+  const newOrar = {...orar, orareSuplimentare: [...orar.orareSuplimentare]}
+  newOrar.orareSuplimentare.splice(index, 1)
+  return newOrar
+}
+
+export const validateGrupa = (grupa: string, orar: Orar): void => {
+  if(!grupa || grupa === "" || grupa.length < 2)
+    throw new Error("Grupa invalida")
+  if (grupa === orar.mainOrar.source.grupa)
+    throw new Error("Grupa exista deja. Aceasta este chiar in orarul principal.")
+  const index = getOrarSuplimetarIndex(orar, grupa)
+  if (index !== -1)
+    throw new Error("Grupa exista deja. Aceasta este in orarul suplimentar, pe pozitia " + (index + 1))
+}
+
+export const createSourceForGrupa = (grupa: string, orar: Orar): Source => {
+  return {...orar.mainOrar.source, grupa: grupa}
+}
 
 // equals
 
@@ -178,6 +234,18 @@ export const equalsOra = (ora1: Ora, ora2: Ora): boolean => {
     ora1.profesor === ora2.profesor &&
     ora1.formatie === ora2.formatie &&
     ora1.hidden === ora2.hidden
+}
+
+export const equalsOraGrupa = (ora1: Ora, ora2: Ora): boolean => {
+  return (!ora1.formatie || !ora2.formatie || ora1.formatie === ora2.formatie) &&
+    ora1.numeMaterie === ora2.numeMaterie &&
+    ora1.tip === ora2.tip &&
+    ora1.sala === ora2.sala &&
+    ora1.hourStart === ora2.hourStart &&
+    ora1.minuteStart === ora2.minuteStart &&
+    ora1.hourEnd === ora2.hourEnd &&
+    ora1.minuteEnd === ora2.minuteEnd &&
+    ora1.profesor === ora2.profesor
 }
 
 export const equalsCustomOra = (ora1: CustomOra, ora2: CustomOra): boolean => {

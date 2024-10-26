@@ -5,7 +5,7 @@ import {IonButton, IonContent, IonIcon, IonInput, IonLabel, IonSelect, IonSelect
 import {download, refresh} from "ionicons/icons"
 import {fetchOrar} from "../service/scrapper"
 import {saveOrarDataToStorage} from "../storage/orarData"
-import {allOreHidden, equalsOra, equalsOrar, equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru} from "../service/orarUtils"
+import {allOreHidden, equalsOra, equalsOrar, equalsOrarSource, getAn, getGrupa, getLastUpdateText, getSemestru, orarExists, orarSourceExists, setAn, setGrupa, setOrar as setOrarModel, setSemestru, validateOrareSuplimentare} from "../service/orarUtils"
 import {ListaMaterii} from "../components/ListaMaterii"
 import {Ora, Orar} from "../model/orar"
 import {SaveCancelButtons} from "../components/core/SaveCancelButtons"
@@ -58,26 +58,7 @@ export const OrarSettings = () => {
   }
 
   const setAndValidateOrareSuplimentare = (orar: Orar) => {
-    // find duplicates in orar.mainOrar and orar.orareSuplimentare
-    orar = {...orar}
-    orar.orareSuplimentare = [...orar.orareSuplimentare]
-    for(let i = 0; i < orar.orareSuplimentare.length; i++) {
-      // remove if all ore are hidden
-      if(allOreHidden(orar.orareSuplimentare[i])) {
-        orar.orareSuplimentare.splice(i, 1)
-        i--; continue
-      }
-      // check for every ora in orarSuplimentar if it exists in orar.mainOrar. If it does, remove it - curs is already in main orar
-      orar.orareSuplimentare[i] = {...orar.orareSuplimentare[i], ore: [...orar.orareSuplimentare[i].ore]}
-      for(let j = 0; j < orar.orareSuplimentare[i].ore.length; j++) {
-        const ora = orar.orareSuplimentare[i].ore[j]
-        if(orar.mainOrar.ore.find((mainOra) => equalsOra(mainOra, ora))) {
-          orar.orareSuplimentare[i].ore.splice(j, 1)
-          j--; continue
-        }
-      }
-    }
-    setOrar(orar)
+    setOrar(validateOrareSuplimentare(orar))
   }
 
   const refreshOrar = () => {

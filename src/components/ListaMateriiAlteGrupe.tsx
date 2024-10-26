@@ -3,7 +3,7 @@ import {useState} from "react"
 import {IonButton, IonInput} from "@ionic/react"
 import {fetchOrar} from "../service/scrapper"
 import {ListaMaterii} from "./ListaMaterii"
-import {addOrarSuplimentar, allOreHidden, equalsOra, getOrarSuplimetarIndex, setOrarSuplimentar} from "../service/orarUtils"
+import {addOrarSuplimentar, allOreHidden, createSourceForGrupa, equalsOra, getOrarSuplimetarIndex, removeGrupaIndexFromOrar, removeOrarDuplicates, setOrarSuplimentar, validateGrupa} from "../service/orarUtils"
 
 interface ListaMateriiAlteGrupeProps {
   orar: Orar
@@ -24,20 +24,6 @@ export const ListaMateriiAlteGrupe = (props: ListaMateriiAlteGrupeProps) => {
     setValid(text === '')
   }
 
-  const removeDuplicates = (orarGrupa: OrarGrupa) => {
-    // check for every ora in orarSuplimentar if it exists in orar.mainOrar. If it does, remove it - curs is already in main orar
-    // TODO: this does not work
-    const newOrarGrupa = {...orarGrupa, ore: [...orarGrupa.ore]}
-    for(let i = 0; i < newOrarGrupa.ore.length; i++) {
-      if(props.orar.mainOrar.ore.find((mainOra) => equalsOra(mainOra, newOrarGrupa.ore[i]))) {
-        newOrarGrupa.ore.splice(i, 1)
-        console.log("Removed duplicated ora", newOrarGrupa.ore[i])
-        i--; continue
-      }
-    }
-    return newOrarGrupa
-  }
-
   const addGrupa = () => {
     const newOrar = addOrarSuplimentar(props.orar, orarGrupa)
     props.setOrar(newOrar)
@@ -48,11 +34,7 @@ export const ListaMateriiAlteGrupe = (props: ListaMateriiAlteGrupeProps) => {
   }
 
   const removeGrupa = (index: number) => {
-    console.log("Removing grupa", index)
-    //debugger
-    const newOrar = {...props.orar, orareSuplimentare: [...props.orar.orareSuplimentare]}
-    newOrar.orareSuplimentare.splice(index, 1)
-    props.setOrar(newOrar)
+    props.setOrar(removeGrupaIndexFromOrar(props.orar, index))
   }
 
   const setOrarExistent = (grupa: string) => (orar: OrarGrupa) => {
@@ -64,21 +46,16 @@ export const ListaMateriiAlteGrupe = (props: ListaMateriiAlteGrupeProps) => {
   const setAndValidateGrupa = (grupa: string) => {
     setGrupa(grupa)
     setOrarGrupa(undefined)
-    // check if grupa exists in orar
-    if(grupa.length < 2) {
-      setError(defaultErrorText)
-      return
-    }
-    const orarGrupa = props.orar.orareSuplimentare.find((orar) => orar.source.grupa === grupa)
-    if(orarGrupa || props.orar.mainOrar.source.grupa === grupa) {
-      setError('Grupa deja exista')
+    try {validateGrupa(grupa, props.orar)}
+    catch (error) {
+      setError(error.message)
       return
     }
     // fetch orar
-    const source = {...props.orar.mainOrar.source, grupa: grupa} as Source
+    const source = createSourceForGrupa(grupa, props.orar)
     fetchOrar(source, true).then((parsedOrar) => {
       const orarGrupa = parsedOrar.orar
-      setOrarGrupa(removeDuplicates(orarGrupa))
+      setOrarGrupa(removeOrarDuplicates(orarGrupa, props.orar))
       setError('')
     }).catch((error) => {
       setError(`Grupa ${grupa} nu exista`)
