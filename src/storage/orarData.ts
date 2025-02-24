@@ -6,17 +6,21 @@ export const getOrarDataFromStorage = async (): Promise<Orar> => {
     if (!data.value)
       throw new Error('Orar data not found')
     let orarData = JSON.parse(data.value)
-    let lastUpdate = new Date(), tokens = orarData.lastUpdate.split('.')
-    lastUpdate.setDate(parseInt(tokens[0]))
-    lastUpdate.setMonth(parseInt(tokens[1]))
-    lastUpdate.setFullYear(parseInt(tokens[2]))
-    orarData = {...orarData, lastUpdate: lastUpdate}
+    if (typeof orarData.lastUpdate === "string") {
+      let lastUpdate = new Date(), tokens = orarData.lastUpdate.split('.')
+      lastUpdate.setDate(parseInt(tokens[0]))
+      lastUpdate.setMonth(parseInt(tokens[1]))
+      lastUpdate.setFullYear(parseInt(tokens[2]))
+      orarData = {...orarData, lastUpdate}
+    }
     return orarData
   })
 }
 
 export const saveOrarDataToStorage = async (data: any) => {
-  data.lastUpdate = `${data.lastUpdate.getDate()}.${data.lastUpdate.getMonth()}.${data.lastUpdate.getFullYear()}`
+  if (data.lastUpdate instanceof Date) {
+    data.lastUpdate = `${data.lastUpdate.getDate()}.${data.lastUpdate.getMonth()}.${data.lastUpdate.getFullYear()}`
+  }
   await Preferences.set({ key: 'orarData', value: JSON.stringify(data) })
 }
 

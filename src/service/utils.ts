@@ -30,7 +30,7 @@ export const getAcademicYear = () => {
   const date = new Date()
   const month = date.getMonth()
   let rez = date.getFullYear()
-  if(month < 9)
+  if(month < 8)
     rez--
   return rez.toString()
 }
@@ -38,7 +38,7 @@ export const getAcademicYear = () => {
 export const getSemester = () => {
   const date = new Date()
   const month = date.getMonth()
-  if(month >= 9 || month < 2)
+  if(month >= 8 || month < 1) // 8 - September, 1 - February
     return "1"
   return "2"
 }
